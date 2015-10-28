@@ -24,7 +24,3 @@
 
 API Docs
 ========
-
-invenio_admin
--------------
-

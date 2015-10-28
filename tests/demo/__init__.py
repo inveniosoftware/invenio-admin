@@ -21,25 +21,3 @@
 # In applying this license, CERN does not
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
-
-"""Administration interface for Invenio."""
-
-from __future__ import absolute_import, print_function
-
-from flask_admin import AdminIndexView
-from flask_login import current_user
-
-
-def protected_adminview_factory(cls):
-    """Factory for creating protected view classes."""
-    class ProtectedAdminView(cls):
-        """Admin view class protected by authentication."""
-
-        def is_accessible(self):
-            """Protect with authentication."""
-            return current_user.is_authenticated()
-
-    return ProtectedAdminView
-
-ProtectedAdminIndexView = protected_adminview_factory(AdminIndexView)
-"""Create protected AdminIndexView."""

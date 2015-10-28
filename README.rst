@@ -41,7 +41,7 @@
         :target: https://github.com/inveniosoftware/invenio-admin/blob/master/LICENSE
 
 
-Invenio module that adds administration panel to the system.
+Administration interface for Invenio.
 
 *This is an experimental developer preview release.*
 

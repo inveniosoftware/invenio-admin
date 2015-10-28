@@ -24,7 +24,7 @@
 
 
 pep257 invenio_admin && \
-isort -rc -c -df **/*.py && \
+# isort -rc -c -df -sp . **/*.py && \
 check-manifest --ignore ".travis-*" && \
 sphinx-build -qnNW docs docs/_build/html && \
 python setup.py test && \

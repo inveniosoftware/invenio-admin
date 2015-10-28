@@ -22,33 +22,57 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Invenio module that adds administration panel to the system."""
+"""Invenio-Admin Flask extension."""
 
 from __future__ import absolute_import, print_function
 
-from flask_babelex import gettext as _
+import pkg_resources
+from flask_admin import Admin
+from invenio_db import db
 
-from .views import blueprint
+from . import config
+from .views import ProtectedAdminIndexView, protected_adminview_factory
 
 
 class InvenioAdmin(object):
-    """Invenio-Admin extension."""
+    """Invenio-Admin extension.
 
-    def __init__(self, app=None):
+    :param app: Flask application.
+    :param entry_point_group: Name of entry point group to load views/models
+        from.
+    """
+
+    def __init__(self, app=None, **kwargs):
         """Extension initialization."""
-        _('A translation string')
         if app:
-            self.init_app(app)
+            self.init_app(app, **kwargs)
 
-    def init_app(self, app):
+    def init_app(self, app, entry_point_group='invenio_admin.views',
+                 **kwargs):
         """Flask application initialization."""
         self.init_config(app)
-        app.register_blueprint(blueprint)
+
+        # Create admin instance.
+        self.admin = Admin(
+            app,
+            name=app.config['ADMIN_APPNAME'],
+            template_mode=kwargs.get('template_mode', 'bootstrap3'),
+            index_view=ProtectedAdminIndexView())
+
+        # Load administration interfaces defined by entry points.
+        if entry_point_group:
+            for ep in pkg_resources.iter_entry_points(group=entry_point_group):
+                modelview, model = ep.load()
+
+                # Add default security to the model view
+                protected_view = protected_adminview_factory(modelview)
+                self.admin.add_view(protected_view(model, db.session))
+
         app.extensions['invenio-admin'] = self
 
     def init_config(self, app):
         """Initialize configuration."""
-        app.config.setdefault(
-            "ADMIN_BASE_TEMPLATE",
-            app.config.get("BASE_TEMPLATE",
-                           "invenio_admin/base.html"))
+        # Set default configuration
+        for k in dir(config):
+            if k.startswith("ADMIN_"):
+                app.config.setdefault(k, getattr(config, k))

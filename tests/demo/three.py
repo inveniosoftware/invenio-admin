@@ -22,24 +22,22 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Administration interface for Invenio."""
+"""Mocks of DB Models and Admin's ModelViews for entrypoint testing."""
 
-from __future__ import absolute_import, print_function
-
-from flask_admin import AdminIndexView
-from flask_login import current_user
+from flask_admin.contrib.sqla import ModelView
+from invenio_db import db
 
 
-def protected_adminview_factory(cls):
-    """Factory for creating protected view classes."""
-    class ProtectedAdminView(cls):
-        """Admin view class protected by authentication."""
+class ModelThree(db.Model):
+    """Test model with just one column."""
 
-        def is_accessible(self):
-            """Protect with authentication."""
-            return current_user.is_authenticated()
+    id = db.Column(db.Integer, primary_key=True)
+    """Id of the model."""
 
-    return ProtectedAdminView
 
-ProtectedAdminIndexView = protected_adminview_factory(AdminIndexView)
-"""Create protected AdminIndexView."""
+class ModelThreeModelView(ModelView):
+    """AdminModelView of the ModelOne."""
+
+    pass
+
+three = (ModelThreeModelView, ModelThree)

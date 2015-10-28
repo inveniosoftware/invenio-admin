@@ -27,4 +27,5 @@ Authors
 
 Invenio module that adds administration panel to the system.
 
-- CERN <info@invenio-software.org>
+- Krzysztof Nowak <k.nowak@cern.ch>
+- Lars Holm Nielsen <lars.holm.nielsen@cern.ch>
