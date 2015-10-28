@@ -22,12 +22,22 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Version information for Invenio-Admin.
+"""Mocks of DB Models and Admin's ModelViews for entrypoint testing."""
 
-This file is imported by ``invenio_admin.__init__``,
-and parsed by ``setup.py``.
-"""
+from flask_admin.contrib.sqla import ModelView
+from invenio_db import db
 
-from __future__ import absolute_import, print_function
 
-__version__ = "1.0.0.dev20151120"
+class ModelThree(db.Model):
+    """Test model with just one column."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    """Id of the model."""
+
+
+class ModelThreeModelView(ModelView):
+    """AdminModelView of the ModelOne."""
+
+    pass
+
+three = (ModelThreeModelView, ModelThree)

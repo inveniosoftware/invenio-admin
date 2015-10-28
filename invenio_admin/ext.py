@@ -26,25 +26,40 @@
 
 from __future__ import absolute_import, print_function
 
-from flask_babelex import gettext as _
+import pkg_resources
+from flask_admin import Admin
+from invenio_db import db
 
-from .views import blueprint
+from . import config
+from .views import ProtectedAdminIndexView, blueprint, \
+    protected_adminview_factory
 
 
 class InvenioAdmin(object):
     """Invenio-Admin extension."""
 
-    def __init__(self, app=None):
+    def __init__(self, app=None, **kwargs):
         """Extension initialization."""
-        _('A translation string')
         if app:
-            self.init_app(app)
+            self.init_app(app, **kwargs)
 
-    def init_app(self, app):
+    def init_app(self, app, entrypoint_name='invenio_admin.views',
+                 **kwargs):
         """Flask application initialization."""
         self.init_config(app)
         app.register_blueprint(blueprint)
         app.extensions['invenio-admin'] = self
+        self.admin = Admin(app, name=app.config['ADMIN_APPNAME'],
+                           template_mode=kwargs.get('template_mode',
+                           'bootstrap3'), index_view=ProtectedAdminIndexView(),
+                           )
+        if entrypoint_name:
+            for ep in pkg_resources.iter_entry_points(group=entrypoint_name):
+                modelview, model = ep.load()
+
+                # Add default security to the model view
+                protected_view = protected_adminview_factory(modelview)
+                self.admin.add_view(protected_view(model, db.session))
 
     def init_config(self, app):
         """Initialize configuration."""
@@ -52,3 +67,7 @@ class InvenioAdmin(object):
             "ADMIN_BASE_TEMPLATE",
             app.config.get("BASE_TEMPLATE",
                            "invenio_admin/base.html"))
+        # Set default configuration
+        for k in dir(config):
+            if k.startswith("ADMIN_"):
+                app.config.setdefault(k, getattr(config, k))
