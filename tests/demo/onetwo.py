@@ -22,4 +22,36 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
--e git+git://github.com/inveniosoftware/invenio-db#egg=Invenio-DB
+"""Mocks of DB Models and Admin's ModelViews for entrypoint testing."""
+
+from flask_admin.contrib.sqla import ModelView
+from invenio_db import db
+
+
+class ModelOne(db.Model):
+    """Test model with just one column."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    """Id of the model."""
+
+
+class ModelTwo(db.Model):
+    """Test model with just one column."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    """Id of the model."""
+
+
+class ModelOneModelView(ModelView):
+    """AdminModelView of the ModelOne."""
+
+    pass
+
+
+class ModelTwoModelView(ModelView):
+    """AdminModelView of the ModelTwo."""
+
+    pass
+
+one = (ModelOneModelView, ModelOne)
+two = (ModelTwoModelView, ModelTwo)

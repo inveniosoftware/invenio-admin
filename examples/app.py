@@ -25,25 +25,55 @@
 
 """Minimal Flask application example for development.
 
-Run example development server:
+Create the database and run the example development server:
 
 .. code-block:: console
 
    $ cd examples
-   $ python app.py
+   $ mkdir instance
+   $ flask -a app.py db init
+   $ flask -a app.py db create
+   $ flask -a app.py run
 """
 
 from __future__ import absolute_import, print_function
 
 from flask import Flask
+from flask_admin.contrib.sqla import ModelView
 from flask_babelex import Babel
+from flask_cli import FlaskCLI
+from flask_login import LoginManager
+from invenio_db import InvenioDB, db
 
 from invenio_admin import InvenioAdmin
+from invenio_admin.views import protected_adminview_factory
 
 # Create Flask application
 app = Flask(__name__)
 Babel(app)
-InvenioAdmin(app)
+admin_app = InvenioAdmin(app)
+LoginManager(app)
+FlaskCLI(app)
+InvenioDB(app)
+app.config.update(
+    SECRET_KEY="CHANGE_ME",
+)
+
+
+class TestModel(db.Model):
+    """Simple model with just one column."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    """Id of the model."""
+
+
+class TestModelView(ModelView):
+    """ModelView of the TestModel."""
+
+    pass
+
+protected_view = protected_adminview_factory(TestModelView)
+admin_app.admin.add_view(protected_view(TestModel, db.session))
 
 if __name__ == "__main__":
     app.run()

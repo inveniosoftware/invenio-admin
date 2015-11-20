@@ -27,7 +27,23 @@
 from __future__ import absolute_import, print_function
 
 from flask import Blueprint, render_template
+from flask_admin import AdminIndexView
 from flask_babelex import gettext as _
+from flask_login import current_user
+
+
+def protected_adminview_factory(cls):
+    """Factory for creating protected view classes."""
+    class ProtectedAdminView(cls):
+        """Admin view class protected by authentication."""
+
+        def is_accessible(self):
+            """Protect with authentication."""
+            return current_user.is_authenticated
+    return ProtectedAdminView
+
+ProtectedAdminIndexView = protected_adminview_factory(AdminIndexView)
+"""Create protected AdminIndexView."""
 
 blueprint = Blueprint(
     'invenio_admin',

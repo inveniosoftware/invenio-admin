@@ -37,6 +37,7 @@ tests_require = [
     'check-manifest>=0.25',
     'coverage>=4.0',
     'isort>=4.2.2',
+    'mock>=1.3.0',
     'pep257>=0.7.0',
     'pytest-cache>=1.0',
     'pytest-cov>=1.8.0',
@@ -60,7 +61,10 @@ setup_requires = [
 ]
 
 install_requires = [
+    'Flask-Admin>=1.3.0',
+    'Flask-Login>=0.3.2',
     'Flask-BabelEx>=0.9.2',
+    'invenio-db>=1.0.0a4',
 ]
 
 packages = find_packages()
