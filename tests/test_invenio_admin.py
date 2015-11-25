@@ -29,6 +29,7 @@ from __future__ import absolute_import, print_function
 
 import importlib
 
+import flask_admin
 from flask import Flask
 from flask_login import UserMixin, login_user
 from mock import patch
@@ -62,6 +63,9 @@ class TestUser(UserMixin):
     def __init__(self, user_id):
         """Constructor of the user."""
         self.id = user_id
+
+    def is_authenticated(self):
+        return True
 
     @classmethod
     def get(cls, user_id):
@@ -125,12 +129,26 @@ def _mock_iter_entry_points(group=None):
 
 
 @patch('pkg_resources.iter_entry_points', _mock_iter_entry_points)
+@patch('invenio_admin.views.current_user', TestUser(1))
 def test_entry_points():
     """Test admin views discovery through entry points."""
     app = Flask('testapp')
     admin_app = InvenioAdmin(app)
     # Check if model views were added by checking the labels of menu items
-    menu_items = [item.name for item in admin_app.admin.menu()]
-    assert 'Model One' in menu_items
-    assert 'Model Two' in menu_items
-    assert 'Model Three' in menu_items
+    menu_items = {str(item.name): item for item in admin_app.admin.menu()}
+    assert 'OneAndTwo' in menu_items  # Category for ModelOne and ModelTwo
+    assert 'Model One' not in menu_items  # ModelOne should go to a category
+    assert 'Model Two' not in menu_items  # ModelTwo should go to a category
+    assert 'Model Three' in menu_items  # ModelThree goes straight to menu
+    assert isinstance(menu_items['Model Three'], flask_admin.menu.MenuView)
+    assert isinstance(menu_items['OneAndTwo'], flask_admin.menu.MenuCategory)
+    assert menu_items['OneAndTwo'].is_category()
+    assert not menu_items['Model Three'].is_category()
+    submenu_items = {str(item.name): item for item in
+                     menu_items['OneAndTwo'].get_children()}
+    assert 'Model One' in submenu_items
+    assert 'Model Two' in submenu_items
+    assert not submenu_items['Model One'].is_category()
+    assert not submenu_items['Model Two'].is_category()
+    assert isinstance(submenu_items['Model One'], flask_admin.menu.MenuView)
+    assert isinstance(submenu_items['Model Two'], flask_admin.menu.MenuView)

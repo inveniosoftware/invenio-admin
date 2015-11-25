@@ -53,5 +53,9 @@ class ModelTwoModelView(ModelView):
 
     pass
 
-one = (ModelOneModelView, ModelOne)
-two = (ModelTwoModelView, ModelTwo)
+one = dict(modelview=ModelOneModelView,
+           model=ModelOne,
+           category='OneAndTwo')
+two = dict(modelview=ModelTwoModelView,
+           model=ModelTwo,
+           category='OneAndTwo')

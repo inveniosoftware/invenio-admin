@@ -40,4 +40,4 @@ class ModelThreeModelView(ModelView):
 
     pass
 
-three = (ModelThreeModelView, ModelThree)
+three = dict(modelview=ModelThreeModelView, model=ModelThree)

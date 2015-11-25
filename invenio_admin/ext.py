@@ -27,7 +27,7 @@
 from __future__ import absolute_import, print_function
 
 import pkg_resources
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView
 from invenio_db import db
 
 from . import config
@@ -42,8 +42,13 @@ class InvenioAdmin(object):
         from.
     """
 
-    def __init__(self, app=None, **kwargs):
-        """Extension initialization."""
+    def __init__(self, app=None, anonymous=False, **kwargs):
+        """InvenioAdmin extension initialization.
+
+        If `anonymous` is True, the admin views are accessible to anonymous
+        users and all security checks are bypassed (use for testing only).
+        """
+        self.anonymous = anonymous
         if app:
             self.init_app(app, **kwargs)
 
@@ -53,21 +58,30 @@ class InvenioAdmin(object):
         self.init_config(app)
 
         # Create admin instance.
+        index_view = AdminIndexView if self.anonymous \
+            else ProtectedAdminIndexView
         self.admin = Admin(
             app,
             name=app.config['ADMIN_APPNAME'],
             template_mode=kwargs.get('template_mode', 'bootstrap3'),
-            index_view=ProtectedAdminIndexView())
+            index_view=index_view())
 
         # Load administration interfaces defined by entry points.
         if entry_point_group:
             for ep in pkg_resources.iter_entry_points(group=entry_point_group):
-                modelview, model = ep.load()
+                adminview_dict = dict(ep.load())
+                assert 'model' in adminview_dict, \
+                    "Admin's entrypoint dictionary must define the 'model'"
+                assert 'modelview' in adminview_dict, \
+                    "Admin's entrypoint dictionary must define the 'modelview'"
+                model = adminview_dict.pop('model')
+                modelview = adminview_dict.pop('modelview')
 
-                # Add default security to the model view
-                protected_view = protected_adminview_factory(modelview)
-                self.admin.add_view(protected_view(model, db.session))
-
+                # If not in anonymous access mode add model-based security
+                if not self.anonymous:
+                    modelview = protected_adminview_factory(modelview)
+                self.admin.add_view(
+                    modelview(model, db.session, **adminview_dict))
         app.extensions['invenio-admin'] = self
 
     def init_config(self, app):
