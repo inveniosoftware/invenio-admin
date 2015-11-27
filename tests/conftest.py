@@ -35,12 +35,15 @@ from flask import Flask
 from flask_admin.contrib.sqla import ModelView
 from flask_babelex import Babel
 from flask_cli import FlaskCLI
-from flask_login import LoginManager
+from flask_login import LoginManager, UserMixin, current_user, login_user
+from flask_principal import Identity, Permission, Principal, UserNeed, \
+    identity_changed, identity_loaded
 from invenio_db import InvenioDB, db
 from sqlalchemy_utils.functions import create_database, database_exists, \
     drop_database
 
 from invenio_admin import InvenioAdmin
+from invenio_admin.permissions import action_admin_access
 from invenio_admin.views import protected_adminview_factory
 
 
@@ -55,24 +58,70 @@ class TestModelView(ModelView):
     """AdminModelView of the TestModel."""
 
 
+class TestUser(UserMixin):
+    """Test user class."""
+
+    def __init__(self, user_id):
+        """Constructor of the user."""
+        self.id = int(user_id)
+
+    @classmethod
+    def get(cls, user_id):
+        """Getter of the TestUser."""
+        return cls(user_id)
+
+
+@pytest.fixture()
+def testmodelcls():
+    """Get the test model class."""
+    return TestModel
+
+
 @pytest.fixture()
 def app(request):
     """Flask application fixture."""
     instance_path = tempfile.mkdtemp()
     app = Flask('testapp', instance_path=instance_path)
+    app.config.update(
+        TESTING=True,
+        SECRET_KEY='SECRET_KEY',
+        ADMIN_LOGIN_ENDPOINT='login',
+    )
     Babel(app)
     FlaskCLI(app)
     InvenioDB(app)
+    Principal(app)
     LoginManager(app)
-    app.admin_app = InvenioAdmin(app)
-    protected_view = protected_adminview_factory(TestModelView)
-    app.admin_app.admin.add_view(protected_view(TestModel, db.session))
 
-    app.config.update(
-        TESTING=True,
-        SECRET_KEY="SECRET_KEY",
-    )
+    # Install login and access loading.
+    @app.login_manager.user_loader
+    def load_user(user_id):
+        return TestUser.get(user_id)
 
+    @app.route('/login/')
+    def login():
+        from flask import current_app
+        from flask import request as flask_request
+        user = TestUser.get(flask_request.args.get('user', 1))
+        login_user(user)
+        identity_changed.send(
+            current_app._get_current_object(),
+            identity=Identity(user.id))
+        return "Logged In"
+
+    @identity_loaded.connect_via(app)
+    def on_identity_loaded(sender, identity):
+        identity.user = current_user
+        identity.provides.add(UserNeed(current_user.id))
+        if current_user.id == 1:
+            identity.provides.add(action_admin_access)
+
+    # Register admin view
+    InvenioAdmin(
+        app, permission_factory=lambda x: Permission(action_admin_access))
+    app.extensions['invenio-admin'].register_view(TestModelView, TestModel)
+
+    # Create database
     with app.app_context():
         if not database_exists(str(db.engine.url)):
             create_database(str(db.engine.url))

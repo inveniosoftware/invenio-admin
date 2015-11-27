@@ -22,37 +22,25 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
+"""Permissions for Invenio-Admin."""
 
-root = true
+import pkg_resources
+from flask_principal import ActionNeed
 
-[*]
-indent_style = space
-end_of_line = lf
-insert_final_newline = true
-trim_trailing_whitespace = true
-charset = utf-8
+action_admin_access = ActionNeed('admin-access')
 
-# Python files
-[*.py]
-indent_size = 4
-# isort plugin configuration
-known_first_party = invenio_admin
-known_third_party = invenio_access, invenio_db
-multi_line_output = 2
-default_section = THIRDPARTY
 
-# RST files (used by sphinx)
-[*.rst]
-indent_size = 4
+def admin_permission_factory(admin_view):
+    """Factory for creating a permission for an admin.
 
-# CSS, HTML, JS, JSON, YML
-[*.{css,html,js,json,yml}]
-indent_size = 2
+    :param admin_view: Instance of administration view which is currently being
+        protected.
+    :returns: Permission instance.
+    """
+    try:
+        pkg_resources.get_distribution('invenio-access')
+        from invenio_access.permissions import DynamicPermission as Permission
+    except pkg_resources.DistributionNotFound:
+        from flask_principal import Permission
 
-# Matches the exact files either package.json or .travis.yml
-[{package.json,.travis.yml}]
-indent_size = 2
-
-# Dockerfile
-[Dockerfile]
-indent_size = 4
+    return Permission(action_admin_access)

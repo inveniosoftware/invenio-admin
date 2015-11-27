@@ -31,7 +31,40 @@ from flask_admin import Admin, AdminIndexView
 from invenio_db import db
 
 from . import config
-from .views import ProtectedAdminIndexView, protected_adminview_factory
+from .permissions import admin_permission_factory
+from .views import protected_adminview_factory
+
+
+class _AdminState(object):
+    """State for Invenio-Admin."""
+
+    def __init__(self, app, admin, permission_factory, view_class_factory):
+        """Initialize state."""
+        # Create admin instance.
+        self.app = app
+        self.admin = admin
+        self.permission_factory = permission_factory
+        self.view_class_factory = view_class_factory
+
+    def register_view(self, view_class, model_class, session=None, **kwargs):
+        """Register an admin view on this admin instance."""
+        view_class = self.view_class_factory(view_class)
+        self.admin.add_view(
+            view_class(model_class, session or db.session, **kwargs))
+
+    def load_entry_point_group(self, entry_point_group):
+        """Load administration interface from entry point group."""
+        for ep in pkg_resources.iter_entry_points(group=entry_point_group):
+            admin_ep = dict(ep.load())
+            assert 'model' in admin_ep, \
+                "Admin's entrypoint dictionary must define the 'model'"
+            assert 'modelview' in admin_ep, \
+                "Admin's entrypoint dictionary must define the 'modelview'"
+
+            self.register_view(
+                admin_ep.pop('modelview'),
+                admin_ep.pop('model'),
+                **admin_ep)
 
 
 class InvenioAdmin(object):
@@ -40,49 +73,42 @@ class InvenioAdmin(object):
     :param app: Flask application.
     :param entry_point_group: Name of entry point group to load views/models
         from.
+    :param permission_factory: Default permission factory to use when
+        protecting admin view.
+    :param viewcls_factory: Factory for creating admin view classes on the
+        fly. Used to protect admin views with authentication and authorization.
+    :param indeview_cls: Admin index view class.
     """
 
-    def __init__(self, app=None, anonymous=False, **kwargs):
-        """InvenioAdmin extension initialization.
-
-        If `anonymous` is True, the admin views are accessible to anonymous
-        users and all security checks are bypassed (use for testing only).
-        """
-        self.anonymous = anonymous
+    def __init__(self, app=None, **kwargs):
+        """InvenioAdmin extension initialization."""
         if app:
-            self.init_app(app, **kwargs)
+            self._state = self.init_app(app, **kwargs)
 
-    def init_app(self, app, entry_point_group='invenio_admin.views',
+    def init_app(self,
+                 app,
+                 entry_point_group='invenio_admin.views',
+                 permission_factory=admin_permission_factory,
+                 view_class_factory=protected_adminview_factory,
+                 index_view_class=AdminIndexView,
                  **kwargs):
         """Flask application initialization."""
         self.init_config(app)
 
-        # Create admin instance.
-        index_view = AdminIndexView if self.anonymous \
-            else ProtectedAdminIndexView
-        self.admin = Admin(
+        # Create administration app.
+        admin = Admin(
             app,
             name=app.config['ADMIN_APPNAME'],
             template_mode=kwargs.get('template_mode', 'bootstrap3'),
-            index_view=index_view())
+            index_view=view_class_factory(index_view_class)())
 
-        # Load administration interfaces defined by entry points.
+        # Create admin state
+        state = _AdminState(app, admin, permission_factory, view_class_factory)
         if entry_point_group:
-            for ep in pkg_resources.iter_entry_points(group=entry_point_group):
-                adminview_dict = dict(ep.load())
-                assert 'model' in adminview_dict, \
-                    "Admin's entrypoint dictionary must define the 'model'"
-                assert 'modelview' in adminview_dict, \
-                    "Admin's entrypoint dictionary must define the 'modelview'"
-                model = adminview_dict.pop('model')
-                modelview = adminview_dict.pop('modelview')
+            state.load_entry_point_group(entry_point_group)
 
-                # If not in anonymous access mode add model-based security
-                if not self.anonymous:
-                    modelview = protected_adminview_factory(modelview)
-                self.admin.add_view(
-                    modelview(model, db.session, **adminview_dict))
-        app.extensions['invenio-admin'] = self
+        app.extensions['invenio-admin'] = state
+        return state
 
     def init_config(self, app):
         """Initialize configuration."""
@@ -90,3 +116,7 @@ class InvenioAdmin(object):
         for k in dir(config):
             if k.startswith("ADMIN_"):
                 app.config.setdefault(k, getattr(config, k))
+
+    def __getattr__(self, name):
+        """Proxy to state object."""
+        return getattr(self._state, name, None)

@@ -30,12 +30,17 @@ from __future__ import absolute_import, print_function
 import importlib
 
 import flask_admin
+import pkg_resources
 from flask import Flask
-from flask_login import UserMixin, login_user
+from flask_admin.contrib.sqla import ModelView
+from invenio_access.permissions import DynamicPermission
+from invenio_db import db
 from mock import patch
 from pkg_resources import EntryPoint
 
 from invenio_admin import InvenioAdmin
+from invenio_admin.permissions import admin_permission_factory
+from invenio_admin.views import protected_adminview_factory
 
 
 def test_version():
@@ -57,51 +62,71 @@ def test_init():
     assert 'invenio-admin' in app.extensions
 
 
-class TestUser(UserMixin):
-    """Test user class."""
+def test_default_permission():
+    """Test loading of default permission class."""
+    with patch('pkg_resources.get_distribution') as get_distribution:
+        get_distribution.side_effect = pkg_resources.DistributionNotFound
+        assert not isinstance(
+            admin_permission_factory(None),
+            DynamicPermission)
 
-    def __init__(self, user_id):
-        """Constructor of the user."""
-        self.id = user_id
-
-    def is_authenticated(self):
-        return True
-
-    @classmethod
-    def get(cls, user_id):
-        """Getter of the TestUser."""
-        return cls(user_id)
+    assert isinstance(admin_permission_factory(None), DynamicPermission)
 
 
 def test_admin_view_authenticated(app):
     """Test the authentication for the admin."""
-    login_manager = app.login_manager
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return TestUser.get(user_id)
-
-    @app.route('/login')
-    def login():
-        login_user(TestUser.get(1))
-        return "Logged In"
-
     with app.test_client() as client:
-        res = client.get("/admin", follow_redirects=True)
-        assert res.status_code == 403
-    with app.test_client() as client:
-        res = client.get("/admin/testmodel", follow_redirects=True)
-        assert res.status_code == 403
+        res = client.get("/admin/", follow_redirects=False)
+        # Assert redirect to login
+        assert res.status_code == 302
 
+    # Unauthenticated users are redirect to login page.
     with app.test_client() as client:
-        res = client.get('/login', follow_redirects=True)
-        res = client.get("/admin", follow_redirects=True)
+        res = client.get("/admin/testmodel/", follow_redirects=False)
+        assert res.status_code == 302
+        assert res.location.startswith('http://localhost/login')
+
+    # User 1 can access admin because it has ActioNeed(admin-access)
+    with app.test_client() as client:
+        res = client.get('/login/?user=1')
+        assert res.status_code == 200
+        res = client.get('/admin/')
+        assert res.status_code == 200
+        res = client.get('/admin/testmodel/')
         assert res.status_code == 200
 
+    # User 2 is missing ActioNeed(admin-access) and thus can't access admin.
+    # 403 error returned.
     with app.test_client() as client:
-        res = client.get('/login', follow_redirects=True)
-        res = client.get("/admin/testmodel", follow_redirects=True)
+        res = client.get('/login/?user=2')
+        res = client.get("/admin/")
+        assert res.status_code == 403
+        res = client.get("/admin/testmodel/")
+        assert res.status_code == 403
+
+
+def test_custom_permissions(app, testmodelcls):
+    """Test custom permissions."""
+    class CustomModel(testmodelcls):
+        pass
+
+    class CustomView(ModelView):
+        def is_accessible(self):
+            return False
+
+    protected_view = protected_adminview_factory(CustomView)
+    app.extensions['admin'][0].add_view(
+        protected_view(CustomModel, db.session))
+
+    with app.test_client() as client:
+        res = client.get('/login/?user=1')
         assert res.status_code == 200
+        res = client.get('/admin/')
+        assert res.status_code == 200
+        res = client.get('/admin/testmodel/')
+        assert res.status_code == 200
+        res = client.get('/admin/custommodel/')
+        assert res.status_code == 403
 
 
 class MockEntryPoint(EntryPoint):
@@ -129,11 +154,14 @@ def _mock_iter_entry_points(group=None):
 
 
 @patch('pkg_resources.iter_entry_points', _mock_iter_entry_points)
-@patch('invenio_admin.views.current_user', TestUser(1))
 def test_entry_points():
     """Test admin views discovery through entry points."""
+    from flask_principal import Permission
     app = Flask('testapp')
-    admin_app = InvenioAdmin(app)
+    admin_app = InvenioAdmin(
+        app,
+        permission_factory=lambda x: Permission(),
+        view_class_factory=lambda x: x)
     # Check if model views were added by checking the labels of menu items
     menu_items = {str(item.name): item for item in admin_app.admin.menu()}
     assert 'OneAndTwo' in menu_items  # Category for ModelOne and ModelTwo

@@ -22,3 +22,6 @@
 
 ADMIN_APPNAME = 'Invenio'
 """Name of the Flask-Admin app."""
+
+ADMIN_LOGIN_ENDPOINT = 'security.login'
+"""Endpoint name of login view."""

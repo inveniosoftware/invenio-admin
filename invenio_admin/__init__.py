@@ -43,13 +43,7 @@ InvenioDB is the only Invenio dependency which needs to be instantiated:
 >>> from invenio_db import InvenioDB
 >>> from invenio_admin import InvenioAdmin
 >>> ext_db = InvenioDB(app)
->>> ext_admin = InvenioAdmin(app, anonymous=True)
-
-.. warning::
-
- Instantiating InvenioAdmin with ``anonymous=True`` bypasses the authorization
- checks for the admin panel. This option is used primarily for testing and
- should never be used in production systems.
+>>> ext_admin = InvenioAdmin(app)
 
 Let's now define a model and a model view ...
 
@@ -68,7 +62,7 @@ Let's now define a model and a model view ...
 
 ... and register them in the admin extension:
 
->>> ext_admin.admin.add_view(LunchModelView(Lunch, db.session))
+>>> ext_admin.register_view(LunchModelView, Lunch)
 
 Finally, initialize the database and run the development server:
 
@@ -89,8 +83,9 @@ Built-In security and authentication check
 ------------------------------------------
 Although Invenio-Admin does not directly depend on Invenio-Access or
 Invenio-Accounts module, it does protect the admin views with Flask-Login and
-Flask-Principal features. In order to log in to a Invenio-Admin panel the user
-needs to be authenticated using Flask-Login.
+Flask-Principal features. In order to login to a Invenio-Admin panel the user
+needs to be authenticated using Flask-Login and have a Flask-Principal
+identity which provides the ``ActionNeed('admin-access')``.
 
 AdminView discovery through setuptools' entry points
 ----------------------------------------------------

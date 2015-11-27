@@ -36,6 +36,7 @@ history = open('CHANGES.rst').read()
 tests_require = [
     'check-manifest>=0.25',
     'coverage>=4.0',
+    'invenio-accounts>=1.0.0a5',
     'isort>=4.2.2',
     'mock>=1.3.0',
     'pep257>=0.7.0',
@@ -49,6 +50,9 @@ extras_require = {
     'docs': [
         'Sphinx>=1.3',
     ],
+    'access': [
+        'invenio-access>=1.0.0a1',
+    ],
     'tests': tests_require,
 }
 
@@ -56,14 +60,10 @@ extras_require['all'] = []
 for reqs in extras_require.values():
     extras_require['all'].extend(reqs)
 
-setup_requires = [
-    'Babel>=1.3',
-]
-
 install_requires = [
     'Flask-Admin>=1.3.0',
     'Flask-Login<0.3.0,>=0.2.11',
-    'Flask-BabelEx>=0.9.2',
+    'Flask-Principal>=0.4.0',
     'invenio-db>=1.0.0a6',
 ]
 
@@ -123,10 +123,16 @@ setup(
     zip_safe=False,
     include_package_data=True,
     platforms='any',
-    entry_points={},
+    entry_points={
+        'invenio_base.apps': [
+            'invenio_admin = invenio_admin:InvenioAdmin',
+        ],
+        'invenio_access.actions': [
+            'admin_access = invenio_admin.permissions:action_admin_access',
+        ]
+    },
     extras_require=extras_require,
     install_requires=install_requires,
-    setup_requires=setup_requires,
     tests_require=tests_require,
     classifiers=[
         'Environment :: Web Environment',

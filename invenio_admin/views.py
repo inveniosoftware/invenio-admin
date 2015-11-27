@@ -22,24 +22,44 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Administration interface for Invenio."""
+"""Admin view class factory for creating protected admin views on-the-fly."""
 
 from __future__ import absolute_import, print_function
 
-from flask_admin import AdminIndexView
+from flask import current_app, redirect, request, url_for
 from flask_login import current_user
+from werkzeug.local import LocalProxy
+
+current_admin = LocalProxy(lambda: current_app.extensions['invenio-admin'])
 
 
-def protected_adminview_factory(cls):
-    """Factory for creating protected view classes."""
-    class ProtectedAdminView(cls):
+def protected_adminview_factory(base_class):
+    """Factory for creating protected admin view classes.
+
+    The factory will create a new class using the provided class as base class
+    and overwriting ``is_accessible()`` and ``inaccessible_callback()``
+    methods.
+
+    :param base_class: Class to use as base class.
+    :returns: Admin view class which provides authentication and authorization.
+    """
+    class ProtectedAdminView(base_class):
         """Admin view class protected by authentication."""
 
         def is_accessible(self):
-            """Protect with authentication."""
-            return current_user.is_authenticated()
+            """Require authentication and authorization."""
+            return current_user.is_authenticated() and \
+                current_admin.permission_factory(self).can() and \
+                super(ProtectedAdminView, self).is_accessible()
+
+        def inaccessible_callback(self, name, **kwargs):
+            """Redirect to login if user is not logged in."""
+            if not current_user.is_authenticated():
+                # Redirect to login page if user is not logged in.
+                return redirect(url_for(
+                    current_app.config['ADMIN_LOGIN_ENDPOINT'],
+                    next=request.url))
+            super(ProtectedAdminView, self).inaccessible_callback(
+                name, **kwargs)
 
     return ProtectedAdminView
-
-ProtectedAdminIndexView = protected_adminview_factory(AdminIndexView)
-"""Create protected AdminIndexView."""
