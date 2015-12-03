@@ -48,13 +48,13 @@ def protected_adminview_factory(base_class):
 
         def is_accessible(self):
             """Require authentication and authorization."""
-            return current_user.is_authenticated() and \
+            return current_user.is_authenticated and \
                 current_admin.permission_factory(self).can() and \
                 super(ProtectedAdminView, self).is_accessible()
 
         def inaccessible_callback(self, name, **kwargs):
             """Redirect to login if user is not logged in."""
-            if not current_user.is_authenticated():
+            if not current_user.is_authenticated:
                 # Redirect to login page if user is not logged in.
                 return redirect(url_for(
                     current_app.config['ADMIN_LOGIN_ENDPOINT'],

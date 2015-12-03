@@ -36,7 +36,7 @@ history = open('CHANGES.rst').read()
 tests_require = [
     'check-manifest>=0.25',
     'coverage>=4.0',
-    'invenio-accounts>=1.0.0a5',
+    'invenio-accounts>=1.0.0a6',
     'isort>=4.2.2',
     'mock>=1.3.0',
     'pep257>=0.7.0',
@@ -51,7 +51,7 @@ extras_require = {
         'Sphinx>=1.3',
     ],
     'access': [
-        'invenio-access>=1.0.0a1',
+        'invenio-access>=1.0.0a3',
     ],
     'tests': tests_require,
 }
@@ -62,7 +62,7 @@ for reqs in extras_require.values():
 
 install_requires = [
     'Flask-Admin>=1.3.0',
-    'Flask-Login<0.3.0,>=0.2.11',
+    'Flask-Login>=0.3.0',
     'Flask-Principal>=0.4.0',
     'invenio-db>=1.0.0a6',
 ]
