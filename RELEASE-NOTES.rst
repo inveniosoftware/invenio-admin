@@ -2,7 +2,7 @@
  Invenio-Admin v1.0.0
 ======================
 
-Invenio-Admin v1.0.0 was released on November 30, 2015.
+Invenio-Admin v1.0.0 was released on December 10, 2015.
 
 About
 -----
