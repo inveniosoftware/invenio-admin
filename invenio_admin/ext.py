@@ -81,7 +81,7 @@ class InvenioAdmin(object):
     """
 
     def __init__(self, app=None, **kwargs):
-        """InvenioAdmin extension initialization."""
+        """Invenio-Admin extension initialization."""
         if app:
             self._state = self.init_app(app, **kwargs)
 
