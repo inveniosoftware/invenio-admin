@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -29,6 +29,7 @@ from __future__ import absolute_import, print_function
 
 import shutil
 import tempfile
+import uuid
 
 import pytest
 from flask import Flask
@@ -39,12 +40,13 @@ from flask_login import LoginManager, UserMixin, current_user, login_user
 from flask_principal import Identity, Permission, Principal, UserNeed, \
     identity_changed, identity_loaded
 from invenio_db import InvenioDB, db
+from sqlalchemy.dialects import mysql
 from sqlalchemy_utils.functions import create_database, database_exists, \
     drop_database
+from sqlalchemy_utils.types import UUIDType
 
 from invenio_admin import InvenioAdmin
 from invenio_admin.permissions import action_admin_access
-from invenio_admin.views import protected_adminview_factory
 
 
 class TestModel(db.Model):
@@ -52,6 +54,14 @@ class TestModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     """Id of the model."""
+
+    uuidcol = db.Column(UUIDType, default=uuid.uuid4)
+    """UUID test column."""
+
+    dt = db.Column(
+        db.DateTime().with_variant(mysql.DATETIME(), "mysql"),
+        nullable=True,
+    )
 
 
 class TestModelView(ModelView):
@@ -86,6 +96,7 @@ def app(request):
         TESTING=True,
         SECRET_KEY='SECRET_KEY',
         ADMIN_LOGIN_ENDPOINT='login',
+        SQLALCHEMY_TRACK_MODIFICATIONS=True,
     )
     Babel(app)
     FlaskCLI(app)
