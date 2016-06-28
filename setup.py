@@ -117,7 +117,7 @@ setup(
     keywords='invenio admin',
     license='GPLv2',
     author='CERN',
-    author_email='info@invenio-software.org',
+    author_email='info@inveniosoftware.org',
     url='https://github.com/inveniosoftware/invenio-admin',
     packages=packages,
     zip_safe=False,
