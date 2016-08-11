@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -31,9 +31,10 @@ Create the database and run the example development server:
 
    $ cd examples
    $ mkdir instance
-   $ flask -a app.py db init
-   $ flask -a app.py db create
-   $ flask -a app.py run
+   $ export FLASK_APP=app.py
+   $ flask db init
+   $ flask db create
+   $ flask run
 """
 
 from __future__ import absolute_import, print_function
@@ -41,7 +42,6 @@ from __future__ import absolute_import, print_function
 from flask import Flask
 from flask_admin.contrib.sqla import ModelView
 from flask_babelex import Babel
-from flask_cli import FlaskCLI
 from flask_login import LoginManager
 from invenio_db import InvenioDB, db
 
@@ -53,7 +53,6 @@ app = Flask(__name__)
 Babel(app)
 admin_app = InvenioAdmin(app)
 LoginManager(app)
-FlaskCLI(app)
 InvenioDB(app)
 app.config.update(
     SECRET_KEY="CHANGE_ME",
@@ -74,6 +73,3 @@ class TestModelView(ModelView):
 
 protected_view = protected_adminview_factory(TestModelView)
 admin_app.admin.add_view(protected_view(TestModel, db.session))
-
-if __name__ == "__main__":
-    app.run()
