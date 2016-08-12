@@ -138,8 +138,8 @@ html_theme_options = {
     'github_banner': True,
     'show_powered_by': False,
     'extra_nav_links': {
-        'invenio-admin@GitHub': 'http://github.com/inveniosoftware/invenio-admin',
-        'invenio-admin@PyPI': 'http://pypi.python.org/pypi/invenio-admin/',
+        'invenio-admin@GitHub': 'https://github.com/inveniosoftware/invenio-admin',
+        'invenio-admin@PyPI': 'https://pypi.python.org/pypi/invenio-admin/',
     }
 }
 
@@ -329,4 +329,10 @@ texinfo_documents = [
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {
+    'https://docs.python.org/': None,
+    'flask_admin': ('https://flask-admin.readthedocs.io/en/latest/', None),
+}
+
+# Autodoc configuraton.
+autoclass_content = 'both'

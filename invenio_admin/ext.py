@@ -114,7 +114,7 @@ class InvenioAdmin(object):
         """Initialize configuration."""
         # Set default configuration
         for k in dir(config):
-            if k.startswith("ADMIN_"):
+            if k.startswith('ADMIN_'):
                 app.config.setdefault(k, getattr(config, k))
 
     def __getattr__(self, name):
