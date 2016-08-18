@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -17,11 +17,17 @@
 # along with Invenio; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-"""Configuration for Invenio-Admin."""
+"""Configuration for Invenio-Admin.
 
+.. data:: ADMIN_BASE_TEMPLATE = None
+   Default Flask-Admin template.
+"""
 
 ADMIN_APPNAME = 'Invenio'
 """Name of the Flask-Admin app."""
 
 ADMIN_LOGIN_ENDPOINT = 'security.login'
+"""Endpoint name of login view."""
+
+ADMIN_LOGOUT_ENDPOINT = 'security.logout'
 """Endpoint name of login view."""

@@ -125,7 +125,15 @@ class InvenioAdmin(object):
             app,
             name=app.config['ADMIN_APPNAME'],
             template_mode=kwargs.get('template_mode', 'bootstrap3'),
-            index_view=view_class_factory(index_view_class)())
+            index_view=view_class_factory(index_view_class)(),
+        )
+
+        @app.before_first_request
+        def lazy_base_template():
+            """Initialize admin base template lazily."""
+            base_template = app.config.get('ADMIN_BASE_TEMPLATE')
+            if base_template:
+                admin.base_template = base_template
 
         # Create admin state
         state = _AdminState(app, admin, permission_factory, view_class_factory)
