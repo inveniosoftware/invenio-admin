@@ -35,7 +35,6 @@ import pytest
 from flask import Flask
 from flask_admin.contrib.sqla import ModelView
 from flask_babelex import Babel
-from flask_cli import FlaskCLI
 from flask_login import LoginManager, UserMixin, current_user, login_user
 from flask_principal import Identity, Permission, Principal, UserNeed, \
     identity_changed, identity_loaded
@@ -99,7 +98,6 @@ def app(request):
         SQLALCHEMY_TRACK_MODIFICATIONS=True,
     )
     Babel(app)
-    FlaskCLI(app)
     InvenioDB(app)
     Principal(app)
     LoginManager(app)
