@@ -93,7 +93,7 @@ deploy:
   user: lnielsen
   password:
     secure: "McQSXRNmtCaABH750jB7KEfwcU3uqpG72bx/M/CACqXuWeFuba8TqSgT1+40tQXbUQhzRA43BeQ9bDueN0ZX1A96wJTwUWdZv1lSlI+7/j+E/RD1u/ehvKLJlDRxRYG45ccn9ZiiY65Ri2oAvkWRMK7t0iFQw8eiaaIQW9GtkgAUqd5OvCZBj6hmmMpOksGDJnbW/08Aro/71nqf5fV6IwowzIXe5IpnQ7DCZs79oNvqRw0fMGSeqbmfN1JGPdiHbbbUFzyKEefJPgjnYiRPYr84MEh+d4hQw4PoZeqy+2XSqTAvlUmJc+MsDLQkhc1YGbHB8repVJgaEub5UHnSLKqJ+3mEAcKeUQaxvmw520YXxWAaZxo0FZ5J3R1SumLg6KDUpudAQACXXaOUhiRZS54btOqClNLDKEmPrpVYhlQNgEydz0VcqzXl86Gw7bnjImlnsNMQ5Mfy2unIVk3dmp+AvTV08TA3JM0Nj8k2YUNHn9w3zr8YX4b6ccY1wkhfV1+7Nd2LfZUf5vhI4RVkGsFmh7XaFPeo4PKvDJbuU6KxgAZl4fhNFQN1SP0Z9igiymiZFDydYo/fhzttXeHVU5Dcobr/I7EAOFZzvc860myyjpEAM7G7zrBQ6JQb02Mk/G+nQPEPJJMAEZkv/75OmwkVcHdgRKcoZPHw4iaRhtE="
-  distributions: "sdist bdist_wheel"
+  distributions: "compile_catalog sdist bdist_wheel"
   on:
     tags: true
     python: "2.7"
