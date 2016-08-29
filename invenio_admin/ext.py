@@ -39,7 +39,13 @@ class _AdminState(object):
     """State for Invenio-Admin."""
 
     def __init__(self, app, admin, permission_factory, view_class_factory):
-        """Initialize state."""
+        """Initialize state.
+
+        :param app: The Flask application.
+        :param admin: The Flask-Admin application.
+        :param permission_factory: The permission factory to restrict access.
+        :param view_class_factory: The view class factory to initialize them.
+        """
         # Create admin instance.
         self.app = app
         self.admin = admin
@@ -47,7 +53,13 @@ class _AdminState(object):
         self.view_class_factory = view_class_factory
 
     def register_view(self, view_class, model_class, session=None, **kwargs):
-        """Register an admin view on this admin instance."""
+        """Register an admin view on this admin instance.
+
+        :param view_class: The view class name passed to the view factory.
+        :param model_class: The model class name.
+        :param session: The session handler. If not specified, ``db.session``
+            will be used. (Default: ``None``)
+        """
         view_class = self.view_class_factory(view_class)
         self.admin.add_view(
             view_class(model_class, session or db.session, **kwargs))
@@ -81,7 +93,10 @@ class InvenioAdmin(object):
     """
 
     def __init__(self, app=None, **kwargs):
-        """Invenio-Admin extension initialization."""
+        """Invenio-Admin extension initialization.
+
+        :param app: The Flask application. (Default: ``None``)
+        """
         if app:
             self._state = self.init_app(app, **kwargs)
 
@@ -92,7 +107,17 @@ class InvenioAdmin(object):
                  view_class_factory=protected_adminview_factory,
                  index_view_class=AdminIndexView,
                  **kwargs):
-        """Flask application initialization."""
+        """Flask application initialization.
+
+        :param app: The Flask application.
+        :param entry_point_group: The entry point group to load extensions.
+            (Default: ``'invenio_admin.views'``)
+        :param permission_factory: The permission factory to restrict access.
+            (Default:
+            :class:`invenio_admin.permissions.admin_permission_factory`)
+        :param index_view_class: Specify administrative interface index page.
+            (Default: :class:`flask_admin.base.AdminIndexView`)
+        """
         self.init_config(app)
 
         # Create administration app.
@@ -111,7 +136,10 @@ class InvenioAdmin(object):
         return state
 
     def init_config(self, app):
-        """Initialize configuration."""
+        """Initialize configuration.
+
+        :param app: The Flask application.
+        """
         # Set default configuration
         for k in dir(config):
             if k.startswith('ADMIN_'):

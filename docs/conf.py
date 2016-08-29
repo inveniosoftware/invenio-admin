@@ -331,7 +331,9 @@ texinfo_documents = [
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     'https://docs.python.org/': None,
-    'flask_admin': ('https://flask-admin.readthedocs.io/en/latest/', None),
+    'Flask-Admin': ('https://flask-admin.readthedocs.io/en/latest/', None),
+    'Flask-Principal': ('http://pythonhosted.org/Flask-Principal', None),
+    'invenio-access': ('http://pythonhosted.org/invenio-access', None),
 }
 
 # Autodoc configuraton.
