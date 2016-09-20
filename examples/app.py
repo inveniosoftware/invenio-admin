@@ -29,36 +29,29 @@ Install the Invenio default theme and build assets:
 
 .. code-block:: console
 
+   $ pip install -e .[all]
    $ cd examples
-   $ mkdir instance
-   $ export FLASK_APP=app.py
-   $ pip install invenio-theme
-   $ flask npm
-   $ cd static
-   $ npm install
-   $ cd ..
-   $ flask collect -v
-   $ flask assets build
-
-Create database and tables:
-
-.. code-block:: console
-
-   $ flask db init
-   $ flask db create
-
-Create a user:
-
-.. code-block:: console
-
-   $ flask users create info@inveniosoftware.org -a
+   $ ./app-setup.sh
+   $ ./app-fixtures.sh
 
 Run the development server:
 
 .. code-block:: console
 
-   $ export FLASK_DEBUG=1
-   $ flask run
+   $ FLASK_APP=app.py flask run --debugger -p 5000
+
+Open the page:
+
+.. code-block:: console
+
+    $ open http://127.0.0.1:5000/admin/user/
+
+To be able to uninstall the example app:
+
+.. code-block:: console
+
+    $ ./app-teardown.sh
+
 """
 
 from __future__ import absolute_import, print_function
