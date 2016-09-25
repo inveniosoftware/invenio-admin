@@ -24,7 +24,7 @@ Installation
 Documentation
 -------------
 
-   http://pythonhosted.org/invenio-admin/
+   http://invenio-admin.readthedocs.io/
 
 Happy hacking and thanks for flying Invenio-Admin.
 

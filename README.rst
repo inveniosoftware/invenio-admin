@@ -46,4 +46,4 @@ Administration interface for Invenio.
 *This is an experimental developer preview release.*
 
 * Free software: GPLv2 license
-* Documentation: https://pythonhosted.org/invenio-admin/
+* Documentation: https://invenio-admin.readthedocs.io/
