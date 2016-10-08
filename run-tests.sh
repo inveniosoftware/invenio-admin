@@ -23,8 +23,8 @@
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
 
-pydocstyle invenio_admin && \
-# isort -rc -c -df **/*.py && \
+pydocstyle invenio_admin tests && \
+isort -rc -c -df && \
 check-manifest --ignore ".travis-*" && \
 sphinx-build -qnNW docs docs/_build/html && \
 python setup.py test && \
