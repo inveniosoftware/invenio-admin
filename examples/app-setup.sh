@@ -10,9 +10,9 @@ DIR=`dirname "$0"`
 
 cd $DIR
 export FLASK_APP=app.py
-mkdir $DIR/instance
 
 # Install specific dependencies
+mkdir $DIR/instance
 pip install -r requirements.txt
 
 npm install -g node-sass clean-css requirejs uglify-js
