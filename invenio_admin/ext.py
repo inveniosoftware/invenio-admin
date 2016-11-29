@@ -118,6 +118,7 @@ class InvenioAdmin(object):
         :param index_view_class: Specify administrative interface index page.
             (Default: :class:`flask_admin.base.AdminIndexView`)
         :param kwargs: Passed to :class:`flask_admin.base.Admin`.
+        :returns: Extension state.
         """
         self.init_config(app)
 

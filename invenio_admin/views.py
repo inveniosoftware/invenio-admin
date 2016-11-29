@@ -36,9 +36,14 @@ current_admin = LocalProxy(lambda: current_app.extensions['invenio-admin'])
 def protected_adminview_factory(base_class):
     """Factory for creating protected admin view classes.
 
-    The factory will create a new class using the provided class as base class
-    and overwriting ``is_accessible()`` and ``inaccessible_callback()``
-    methods.
+    The factory will ensure that the admin view will check if a user is
+    authenticated and has the necessary permissions (as defined by the
+    permission factory).
+
+    The factory creates a new class using the provided class as base class
+    and overwrites ``is_accessible()`` and ``inaccessible_callback()``
+    methods. Super is called for both methods, so the base class can implement
+    furhter restrictions if needed.
 
     :param base_class: Class to use as base class.
     :returns: Admin view class which provides authentication and authorization.
