@@ -108,10 +108,14 @@ def test_admin_view_authenticated(app):
 def test_custom_permissions(app, testmodelcls):
     """Test custom permissions."""
     class CustomModel(testmodelcls):
+        """Some custom model."""
         pass
 
     class CustomView(ModelView):
-        def is_accessible(self):
+        """Some custom model."""
+        @staticmethod
+        def is_accessible():
+            """Check if accessible."""
             return False
 
     protected_view = protected_adminview_factory(CustomView)
@@ -140,6 +144,7 @@ class MockEntryPoint(EntryPoint):
 
 
 def _mock_iter_entry_points(group=None):
+    """Mock the entry point iterator."""
     data = {
         'invenio_admin.views': [
             MockEntryPoint('one', 'demo.onetwo'),

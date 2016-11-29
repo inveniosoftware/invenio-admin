@@ -41,9 +41,11 @@
         :target: https://github.com/inveniosoftware/invenio-admin/blob/master/LICENSE
 
 
-Administration interface for Invenio.
+Invenio-Admin allows for easy administration of any Invenio installation,
+simple data curation and execution of actions.
 
-*This is an experimental developer preview release.*
+* Provides default administration panel using Flask-Admin.
 
-* Free software: GPLv2 license
-* Documentation: https://invenio-admin.readthedocs.io/
+* Easily extendible from other Invenio modules using entry points.
+
+Further documentation at: https://invenio-admin.readthedocs.io/

@@ -85,7 +85,7 @@ setup(
     version=version,
     description=__doc__,
     long_description=readme + '\n\n' + history,
-    keywords='invenio admin',
+    keywords='invenio admin flask-admin',
     license='GPLv2',
     author='CERN',
     author_email='info@inveniosoftware.org',

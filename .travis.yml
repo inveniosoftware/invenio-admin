@@ -30,6 +30,9 @@ sudo: false
 
 language: python
 
+matrix:
+  fast_finish: true
+
 cache:
   directories:
     - $HOME/.cache/pip

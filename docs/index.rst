@@ -34,6 +34,7 @@ Invenio-Admin.
    :maxdepth: 2
 
    installation
+   configuration
    usage
 
 

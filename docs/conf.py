@@ -22,12 +22,13 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
+"""Sphinx configuration."""
+
 from __future__ import print_function
 
 import os
 
 import sphinx.environment
-from docutils.utils import get_source_line
 
 # -- General configuration ------------------------------------------------
 
@@ -131,14 +132,16 @@ todo_include_todos = False
 html_theme = 'alabaster'
 
 html_theme_options = {
-    'description': 'Invenio module that adds administration panel to the system.',
+    'description':
+        'Invenio module that adds administration panel to the system.',
     'github_user': 'inveniosoftware',
     'github_repo': 'invenio-admin',
     'github_button': False,
     'github_banner': True,
     'show_powered_by': False,
     'extra_nav_links': {
-        'invenio-admin@GitHub': 'https://github.com/inveniosoftware/invenio-admin',
+        'invenio-admin@GitHub':
+            'https://github.com/inveniosoftware/invenio-admin',
         'invenio-admin@PyPI': 'https://pypi.python.org/pypi/invenio-admin/',
     }
 }
