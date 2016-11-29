@@ -53,7 +53,11 @@ def protected_adminview_factory(base_class):
                 super(ProtectedAdminView, self).is_accessible()
 
         def inaccessible_callback(self, name, **kwargs):
-            """Redirect to login if user is not logged in."""
+            """Redirect to login if user is not logged in.
+
+            :param name: View function name.
+            :param kwargs: Passed to the superclass' `inaccessible_callback`.
+            """
             if not current_user.is_authenticated:
                 # Redirect to login page if user is not logged in.
                 return redirect(url_for(
