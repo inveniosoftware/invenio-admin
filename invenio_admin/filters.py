@@ -36,7 +36,13 @@ class UUIDEqualFilter(filters.FilterEqual):
     """UUID aware filter."""
 
     def apply(self, query, value, alias):
-        """Convert UUID."""
+        """Convert UUID.
+
+        :param query: SQLAlchemy query object.
+        :param value: UUID value.
+        :param alias: Alias of the column.
+        :returns: Filtered query matching the UUID value.
+        """
         try:
             value = uuid.UUID(value)
             return query.filter(self.column == value)

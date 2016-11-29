@@ -27,7 +27,7 @@
 Invenio-Admin is an optional component of Invenio, responsible for registering
 and customizing the administration panel for model views and user-defined
 admin pages. The module uses standard Flask-Admin features and assumes very
-little about other components installed within given Invenio instance.
+little about other components installed within a given Invenio instance.
 
 Initialization
 --------------
@@ -73,7 +73,6 @@ Finally, initialize the database and run the development server:
 ...     create_database(db.engine.url)
 ...     db.create_all()
 >>> app.run() # doctest: +SKIP
-
 
 You should now be able to access the admin panel `http://localhost:5000/admin
 <http://localhost:5000/admin>`_.

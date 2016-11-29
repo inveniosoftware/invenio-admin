@@ -31,7 +31,10 @@ class LazyChoices(object):
     """Lazy form choices."""
 
     def __init__(self, func):
-        """Initialize lazy choices."""
+        """Initialize lazy choices.
+
+        :param func: Function returning an iterable of choices.
+        """
         self._func = func
 
     def __iter__(self):
