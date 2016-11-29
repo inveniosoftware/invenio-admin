@@ -156,6 +156,7 @@ arguments to the constructor of :class:`flask_admin.contrib.sqla.ModelView`.
 from __future__ import absolute_import, print_function
 
 from .ext import InvenioAdmin
+from .proxies import current_admin
 from .version import __version__
 
 __all__ = ('__version__', 'InvenioAdmin')
