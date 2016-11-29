@@ -143,7 +143,8 @@ class InvenioAdmin(object):
         app.extensions['invenio-admin'] = state
         return state
 
-    def init_config(self, app):
+    @staticmethod
+    def init_config(app):
         """Initialize configuration.
 
         :param app: The Flask application.

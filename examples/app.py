@@ -63,12 +63,13 @@ from flask_mail import Mail
 from invenio_access import InvenioAccess
 from invenio_accounts import InvenioAccounts
 from invenio_accounts.views import blueprint
-from invenio_admin import InvenioAdmin
-from invenio_admin.views import protected_adminview_factory
 from invenio_assets import InvenioAssets
 from invenio_db import InvenioDB, db
 from invenio_i18n import InvenioI18N
 from invenio_theme import InvenioTheme
+
+from invenio_admin import InvenioAdmin
+from invenio_admin.views import protected_adminview_factory
 
 # Create Flask application
 app = Flask(__name__)

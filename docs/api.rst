@@ -28,12 +28,6 @@ API Docs
 .. automodule:: invenio_admin.ext
    :members:
 
-Configuration
--------------
-
-.. automodule:: invenio_admin.config
-   :members:
-
 Views
 -----
 
