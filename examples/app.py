@@ -22,10 +22,10 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-
 """Minimal Flask application example for development.
 
-Install the Invenio default theme and build assets:
+First, install Invenio-Admin, setup the application and load fixture data by
+running:
 
 .. code-block:: console
 
@@ -34,31 +34,32 @@ Install the Invenio default theme and build assets:
    $ ./app-setup.sh
    $ ./app-fixtures.sh
 
-Run the development server:
+Next, start the development server:
 
 .. code-block:: console
 
-   $ FLASK_APP=app.py flask run --debugger -p 5000
+   $ export FLASK_APP=app.py FLASK_DEBUG=1
+   $ flask run
 
-Open the page:
+and open the example application in your browser:
 
 .. code-block:: console
 
-    $ open http://127.0.0.1:5000/admin/user/
+    $ open http://127.0.0.1:5000/
 
-To be able to uninstall the example app:
+To reset the example application run:
 
 .. code-block:: console
 
     $ ./app-teardown.sh
-
 """
 
 from __future__ import absolute_import, print_function
 
-from flask import Flask, redirect
+from flask import Flask, Markup, flash, redirect, request, url_for
 from flask_admin.contrib.sqla import ModelView
 from flask_babelex import Babel
+from flask_login import current_user
 from flask_mail import Mail
 from invenio_access import InvenioAccess
 from invenio_accounts import InvenioAccounts
@@ -82,6 +83,7 @@ app.config.update(
     MAIL_SUPPRESS_SEND=True,
     SECRET_KEY='CHANGE_ME',
     SECURITY_PASSWORD_SALT='CHANGE_ME_ALSO',
+    WTF_CSRF_ENABLED=False,
 )
 
 Babel(app)
@@ -91,16 +93,19 @@ InvenioAccounts(app)
 InvenioAccess(app)
 InvenioAssets(app)
 InvenioI18N(app)
-admin_app = InvenioAdmin(app,  # permission_factory=lambda x: x,
-                         view_class_factory=lambda x: x)
 InvenioTheme(app)
-
-app.register_blueprint(blueprint)
+admin_app = InvenioAdmin(app)
+app.register_blueprint(accounts_blueprint)
+app.register_blueprint(admin_blueprint)
 
 
 @app.route('/')
 def index():
     """Basic test view."""
+    flash(Markup(
+        'Login with username <strong>info@inveniosoftware.org</strong> '
+        'and password <strong>123456</strong>.'
+    ))
     return redirect('/admin/')
 
 

@@ -27,6 +27,7 @@
 from __future__ import absolute_import, print_function
 
 import pkg_resources
+
 from flask_admin import Admin, AdminIndexView
 from invenio_db import db
 
