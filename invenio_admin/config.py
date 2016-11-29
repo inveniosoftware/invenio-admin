@@ -17,17 +17,18 @@
 # along with Invenio; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-"""Configuration for Invenio-Admin.
+"""Configuration for Invenio-Admin."""
 
-.. data:: ADMIN_BASE_TEMPLATE = None
-   Default Flask-Admin template.
-"""
+ADMIN_BASE_TEMPLATE = None
+"""Admin panel base template.
+By default (``None``) uses the Flask-Admin template."""
 
 ADMIN_APPNAME = 'Invenio'
-"""Name of the Flask-Admin app."""
+"""Name of the Flask-Admin app (also the page title of admin panel)."""
 
 ADMIN_LOGIN_ENDPOINT = 'security.login'
-"""Endpoint name of login view."""
+"""Endpoint name of the login view. Anonymous users trying to access admin
+panel will be redirected to this endpoint."""
 
 ADMIN_LOGOUT_ENDPOINT = 'security.logout'
-"""Endpoint name of login view."""
+"""Endpoint name of logout view."""

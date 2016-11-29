@@ -40,6 +40,7 @@ known_first_party = invenio_admin
 known_third_party = flask_admin, invenio_access, invenio_db
 multi_line_output = 2
 default_section = THIRDPARTY
+skip = .eggs
 
 # RST files (used by sphinx)
 [*.rst]
