@@ -30,7 +30,7 @@ from flask import current_app, redirect, request, url_for
 from flask_login import current_user
 from werkzeug.local import LocalProxy
 
-current_admin = LocalProxy(lambda: current_app.extensions['invenio-admin'])
+from .proxies import current_admin
 
 
 def protected_adminview_factory(base_class):
