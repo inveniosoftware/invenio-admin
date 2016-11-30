@@ -113,13 +113,13 @@ separate BaseView for statistics. The content of the file is as follows:
         can_create = True
         can_edit = True
         can_view_details = True
-        column_list = ('name', 'price', )
+        column_list = ('id', 'name', 'price', )
 
     class BreakfastModelView(ModelView):
         can_create = False
         can_edit = False
         can_view_details = True
-        column_searchable_list = ('toast', 'eggs', 'bacon' )
+        column_searchable_list = ('id', 'toast', 'eggs', 'bacon' )
 
     class DinerStats(BaseView):
         @expose('/')
@@ -192,8 +192,8 @@ register an entry point under the group ``invenio_admin.views`` inside its
     )
 
 
-Security and authentication check
----------------------------------
+Authentication and authorization
+--------------------------------
 By default Invenio-Admin protects the admin views from un-authenticated users
 with Flask-Login and restricts the access on a per-permission basis using
 Flask-Security. In order to login to a Invenio-Admin panel the user
@@ -214,6 +214,36 @@ identity which provides the ``ActionNeed('admin-access')``.
 
 Styling
 -------
+At core, Invenio-Admin uses Flask-Admin for rendering the admin panel
+and all of its views. All of the features for defining the ModelViews
+and BaseViews can be found in the official Flask-Admin documentation.
+Nonetheless, we will mention some of the ones that were already made easy to
+use directly in Invenio-Admin.
+
+Custom database type filters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Non-basic data types can be made easier to search for and filter, using type
+filters. This way, fields of certain type that is not searchable by default
+can be extended with that functionality. For example, see a build-in UUID
+filter :class:`invenio_admin.filters.UUIDEqualFilter`. You can enable the
+custom fields filters, by setting a variable ``filter_converter`` on the
+ModelView class. See an example of a custom filter converter in
+:class:`invenio_admin.filters.FilterConverter`.
+
+Assuming that the ``id`` field in ``Snack`` model from the example above is a
+UUID-type field, you could enable the UUID filtering on this model as follows:
+
+.. code::
+
+    from invenio_admin.filters import FilterConverter
+
+    class SnackModelView(ModelView):
+        filter_converter = FilterConverter()  # Add filter converter
+        can_create = True
+        can_edit = True
+        can_view_details = True
+        column_list = ('id', 'name', 'price', )
+
 Base template
 ~~~~~~~~~~~~~
 Styling of the administration interface can be changed via the configuration

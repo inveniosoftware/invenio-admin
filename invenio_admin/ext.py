@@ -69,8 +69,9 @@ class _AdminState(object):
         # We assume that there can be only one extra positional argument,
         # at which point we register the ModelView, otherwise we register a
         # custom admin view.
-        assert len(args) <= 1, \
-            "Method accepts either one or two positional arguments"
+        if len(args) > 1:
+            raise Exception(
+                'Method accepts either one or two positional arguments')
         if args:
             model_class = args[0]
             self.admin.add_view(
@@ -91,16 +92,17 @@ class _AdminState(object):
         for ep in pkg_resources.iter_entry_points(group=entry_point_group):
 
             admin_ep = dict(ep.load())
-            m, mv, v = (k in admin_ep for k in ('model', 'modelview', 'view'))
-            assert (m and mv and not v) or (not m and not mv and v), \
-                "Admin entrypoint dictionary must contain either " \
-                "'view' OR 'model' and 'modelview' keys."
+            keys = tuple(k in admin_ep for k in ('model', 'modelview', 'view'))
+            if keys not in ((True, True, False), (False, False, True)):
+                raise Exception(
+                    "Admin entrypoint dictionary must contain "
+                    "either 'view' OR 'model' and 'modelview' keys.")
 
-            if m and mv:
+            if keys[0]:  # if 'model' in admin_ep
                 self.register_view(admin_ep.pop('modelview'),
                                    admin_ep.pop('model'),
                                    **admin_ep)
-            else:  # v
+            else:
                 self.register_view(admin_ep.pop('view'), **admin_ep)
 
 
