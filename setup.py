@@ -35,6 +35,7 @@ tests_require = [
     'check-manifest>=0.25',
     'coverage>=4.0',
     'invenio-accounts>=1.0.0a13',
+    'invenio-theme>=1.0.0a15',
     'isort>=4.2.2',
     'mock>=1.3.0',
     'pydocstyle>=1.0.0',

@@ -153,6 +153,12 @@ class InvenioAdmin(object):
         """
         # Set default configuration
         for k in dir(config):
+            if k == 'ADMIN_BASE_TEMPLATE':
+                try:
+                    pkg_resources.get_distribution('invenio-theme')
+                    continue
+                except pkg_resources.DistributionNotFound:
+                    pass
             if k.startswith('ADMIN_'):
                 app.config.setdefault(k, getattr(config, k))
 

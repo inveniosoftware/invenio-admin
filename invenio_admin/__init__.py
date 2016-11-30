@@ -151,6 +151,29 @@ The dictionary specifying given admin view is required to contain keys
 ``model`` and ``modelview``, which should point to class definitions of
 database Model and admin ModelView. The remaining keys are passed as keyword
 arguments to the constructor of :class:`flask_admin.contrib.sqla.ModelView`.
+
+Styling
+-------
+Base template
+~~~~~~~~~~~~~
+Styling of the administration interface can be changed via the configuration
+variable ``ADMIN_BASE_TEMPLATE``.
+
+If Invenio-Theme is installed,
+``ADMIN_BASE_TEMPLATE`` is automatically set to use the
+`AdminLTE <https://almsaeedstudio.com/themes/AdminLTE/index2.html>`_ theme
+which provides an extra configuration variable ``ADMIN_UI_SKIN`` which controls
+the AdminLTE skin (e.g. ``skin-blue`` or ``skin-black``). See AdminLTE
+documentation for details on supported skins.
+
+If Invenio-Theme is not installed the default Flask-Admin templates will be
+used (based on Bootstrap).
+
+View template mode
+~~~~~~~~~~~~~~~~~~
+Flask-Admin view templates (forms etc.) can either use Bootstap 2 or 3. By
+default the template mode is set to Bootstrap 3 but can be controlled through
+``ADMIN_TEMPLATE_MODE`` configuration variable.
 """
 
 from __future__ import absolute_import, print_function
