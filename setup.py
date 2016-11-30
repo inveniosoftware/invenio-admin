@@ -99,6 +99,9 @@ setup(
         'invenio_base.apps': [
             'invenio_admin = invenio_admin:InvenioAdmin',
         ],
+        'invenio_base.blueprints': [
+            'invenio_admin = invenio_admin.views:blueprint',
+        ],
         'invenio_access.actions': [
             'admin_access = invenio_admin.permissions:action_admin_access',
         ]

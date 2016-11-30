@@ -123,6 +123,22 @@ def test_admin_view_authenticated(app):
         assert res.status_code == 403
 
 
+def test_menu_visiblity(app):
+    """Test menu visiblity."""
+    @app.route('/menu/')
+    def render_menu():
+        settings_menu = app.extensions['menu'].submenu('settings')
+        return ';'.join([i.url for i in settings_menu.children if i.visible])
+
+    with app.test_client() as client:
+        res = client.get('/menu/')
+        assert '/admin/' not in res.get_data(as_text=True)
+        res = client.get('/login/?user=1')
+        assert res.status_code == 200
+        res = client.get('/menu/')
+        assert '/admin/' in res.get_data(as_text=True)
+
+
 def test_custom_permissions(app, testmodelcls):
     """Test custom permissions."""
     class CustomModel(testmodelcls):

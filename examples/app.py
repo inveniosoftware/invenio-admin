@@ -63,13 +63,14 @@ from flask_login import current_user
 from flask_mail import Mail
 from invenio_access import InvenioAccess
 from invenio_accounts import InvenioAccounts
-from invenio_accounts.views import blueprint
+from invenio_accounts.views import blueprint as accounts_blueprint
 from invenio_assets import InvenioAssets
 from invenio_db import InvenioDB, db
 from invenio_i18n import InvenioI18N
 from invenio_theme import InvenioTheme
 
 from invenio_admin import InvenioAdmin
+from invenio_admin.views import blueprint as admin_blueprint
 from invenio_admin.views import protected_adminview_factory
 
 # Create Flask application
@@ -83,6 +84,7 @@ app.config.update(
     MAIL_SUPPRESS_SEND=True,
     SECRET_KEY='CHANGE_ME',
     SECURITY_PASSWORD_SALT='CHANGE_ME_ALSO',
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
     WTF_CSRF_ENABLED=False,
 )
 

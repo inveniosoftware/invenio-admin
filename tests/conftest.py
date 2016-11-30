@@ -36,6 +36,7 @@ from flask import Flask
 from flask_admin.contrib.sqla import ModelView
 from flask_babelex import Babel
 from flask_login import LoginManager, UserMixin, current_user, login_user
+from flask_menu import Menu
 from flask_principal import Identity, Permission, Principal, UserNeed, \
     identity_changed, identity_loaded
 from invenio_db import InvenioDB, db
@@ -46,6 +47,7 @@ from sqlalchemy_utils.types import UUIDType
 
 from invenio_admin import InvenioAdmin
 from invenio_admin.permissions import action_admin_access
+from invenio_admin.views import blueprint
 
 
 class TestModel(db.Model):
@@ -95,12 +97,13 @@ def app(request):
         TESTING=True,
         SECRET_KEY='SECRET_KEY',
         ADMIN_LOGIN_ENDPOINT='login',
-        SQLALCHEMY_TRACK_MODIFICATIONS=True,
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
     Babel(app)
     InvenioDB(app)
     Principal(app)
     LoginManager(app)
+    Menu(app)
 
     # Install login and access loading.
     @app.login_manager.user_loader
@@ -128,7 +131,10 @@ def app(request):
     # Register admin view
     InvenioAdmin(
         app, permission_factory=lambda x: Permission(action_admin_access))
-    app.extensions['invenio-admin'].register_view(TestModelView, TestModel)
+    app.extensions['invenio-admin'].register_view(
+        TestModelView, TestModel, db.session)
+    app.extensions['invenio-admin'].register_view(TestBase)
+    app.register_blueprint(blueprint)
 
     # Create database
     with app.app_context():
