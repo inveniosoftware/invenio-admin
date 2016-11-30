@@ -22,7 +22,7 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Invenio-Admin is an administration interface for Invenio applications.
+"""Administration interface for Invenio applications.
 
 Invenio-Admin is an optional component of Invenio, responsible for registering
 and customizing the administration panel for model views and user-defined
@@ -31,22 +31,34 @@ little about other components installed within a given Invenio instance.
 
 Quick start
 -----------
-This section presents a minimal working example of the Invenio-Admin usage.
+This section presents a minimal working example of the Invenio-Admin.
 
 First, let us create a new Flask application:
 
 >>> from flask import Flask
 >>> app = Flask('DinerApp')
 
-and load the Invenio-DB (required for model views)
-and Invenio-Admin extensions:
+and load the Invenio-DB and Invenio-Admin extensions:
 
 >>> from invenio_db import InvenioDB
 >>> from invenio_admin import InvenioAdmin
 >>> ext_db = InvenioDB(app)
->>> ext_admin = InvenioAdmin(app)
+>>> ext_admin = InvenioAdmin(app, view_class_factory=lambda x: x)
 
-Let's now define a simple model with a model view, as well as simple base view:
+.. warning::
+
+    We use the ``view_class_factory`` parameter above to disable the
+    authentication to the admin panel, in order to simplify this tutorial.
+    Do not use this for production systems, as you will grant access to the
+    admin panel to anonymous users!
+
+    In full application with an authentication system in place, it is
+    sufficient to instantiate the extension like:
+
+    ``ext_admin = InvenioAdmin(app)``
+
+
+Let's now define a simple model with a model view, and one base view:
 
 >>> from invenio_db import db
 >>> from flask_admin.contrib.sqla import ModelView
@@ -61,15 +73,15 @@ Let's now define a simple model with a model view, as well as simple base view:
 ...     can_create = True
 ...     can_edit = True
 ...
->>> class MyBaseView(BaseView):
+>>> class MenuCard(BaseView):
 ...     @expose('/')
 ...     def index(self):
-...         return "HelloWorld!"
+...         return "HelloMenuCard!"
 
 and register them in the admin extension:
 
 >>> ext_admin.register_view(LunchModelView, Lunch)
->>> ext_admin.register_view(MyBaseView)
+>>> ext_admin.register_view(MenuCard)
 
 Finally, initialize the database and run the development server:
 
@@ -100,12 +112,13 @@ For example, assuming a ``Invenio-Diner`` module, the file could reside in:
 
 ``invenio-diner/invenio_diner/admin.py``.
 
-In this example we will define two ModelViews for two ORM models and one
-separate BaseView for statistics. The content of the file is as follows:
+In this example we will define two model views for two database models and one
+separate base view for statistics page. The content of the file is as follows:
 
 .. code-block:: python
 
     # invenio-diner/invenio_diner/admin.py
+    from flask_admin.base import BaseView, expose
     from flask_admin.contrib.sqla import ModelView
     from .models import Snack, Breakfast
 
@@ -124,11 +137,11 @@ separate BaseView for statistics. The content of the file is as follows:
     class DinerStats(BaseView):
         @expose('/')
         def index(self):
-            return "Welcome to the Invenio Diner Statistics page!"
+            return "Welcome to the Invenio-Diner statistics page!"
 
         @expose('/sales/')
         def sales(self):
-            return "You have served 0 dinners!"
+            return "You have served 0 meals!"
 
     snack_adminview = {
         'model': Snack,
@@ -202,13 +215,13 @@ identity which provides the ``ActionNeed('admin-access')``.
 
 .. note::
 
-    If you want to use a custom permission rule, you can easily set
-    provide your own permission factory in the configuration variable
+    If you want to use a custom permission rule, you can easily specify
+    your own permission factory in the configuration variable
     :data:`invenio_admin.config.ADMIN_PERMISSION_FACTORY`.
 
-    For more information see the factory:
+    For more information, see the default factory:
     :func:`invenio_admin.permissions.admin_permission_factory`
-    and the view using it:
+    and how the the view is using it:
     :func:`invenio_admin.views.protected_adminview_factory`
 
 
@@ -222,9 +235,9 @@ use directly in Invenio-Admin.
 
 Custom database type filters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Non-basic data types can be made easier to search for and filter, using type
+Non-basic data types can be made easier to search for and filter using type
 filters. This way, fields of certain type that is not searchable by default
-can be extended with that functionality. For example, see a build-in UUID
+can be extended with that functionality. For example see a built-in UUID
 filter :class:`invenio_admin.filters.UUIDEqualFilter`. You can enable the
 custom fields filters, by setting a variable ``filter_converter`` on the
 ModelView class. See an example of a custom filter converter in
