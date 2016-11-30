@@ -101,8 +101,7 @@ class InvenioAdmin(object):
                  entry_point_group='invenio_admin.views',
                  permission_factory=admin_permission_factory,
                  view_class_factory=protected_adminview_factory,
-                 index_view_class=AdminIndexView,
-                 **kwargs):
+                 index_view_class=AdminIndexView):
         """Flask application initialization.
 
         :param app: The Flask application.
@@ -126,7 +125,7 @@ class InvenioAdmin(object):
         admin = Admin(
             app,
             name=app.config['ADMIN_APPNAME'],
-            template_mode=kwargs.get('template_mode', 'bootstrap3'),
+            template_mode=app.config['ADMIN_TEMPLATE_MODE'],
             index_view=view_class_factory(index_view_class)(),
         )
 
