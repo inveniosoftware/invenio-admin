@@ -100,7 +100,16 @@ def test_admin_view_authenticated(app):
 
     # Unauthenticated users are redirect to login page.
     with app.test_client() as client:
+        # Model view
         res = client.get("/admin/testmodel/", follow_redirects=False)
+        assert res.status_code == 302
+        assert res.location.startswith('http://localhost/login')
+
+        # Base view
+        res = client.get('/admin/testbase/')
+        assert res.status_code == 302
+        assert res.location.startswith('http://localhost/login')
+        res = client.get('/admin/testbase/foo/')
         assert res.status_code == 302
         assert res.location.startswith('http://localhost/login')
 
@@ -108,18 +117,36 @@ def test_admin_view_authenticated(app):
     with app.test_client() as client:
         res = client.get('/login/?user=1')
         assert res.status_code == 200
+        # Admin panel
         res = client.get('/admin/')
         assert res.status_code == 200
+
+        # Model view
         res = client.get('/admin/testmodel/')
+        assert res.status_code == 200
+
+        # Base view
+        res = client.get('/admin/testbase/')
+        assert res.status_code == 200
+        res = client.get('/admin/testbase/foo/')
         assert res.status_code == 200
 
     # User 2 is missing ActioNeed(admin-access) and thus can't access admin.
     # 403 error returned.
     with app.test_client() as client:
         res = client.get('/login/?user=2')
+        # Admin panel
         res = client.get("/admin/")
         assert res.status_code == 403
+
+        # Model view
         res = client.get("/admin/testmodel/")
+        assert res.status_code == 403
+
+        # Base view
+        res = client.get('/admin/testbase/')
+        assert res.status_code == 403
+        res = client.get('/admin/testbase/foo/')
         assert res.status_code == 403
 
 
@@ -147,6 +174,8 @@ def test_custom_permissions(app, testmodelcls):
         assert res.status_code == 200
         res = client.get('/admin/testmodel/')
         assert res.status_code == 200
+        res = client.get('/admin/testbase/')
+        assert res.status_code == 200
         res = client.get('/admin/custommodel/')
         assert res.status_code == 403
 
@@ -168,6 +197,7 @@ def _mock_iter_entry_points(group=None):
             MockEntryPoint('one', 'demo.onetwo'),
             MockEntryPoint('two', 'demo.onetwo'),
             MockEntryPoint('three', 'demo.three'),
+            MockEntryPoint('four', 'demo.four'),
         ]
     }
     names = data.keys() if group is None else [group]
@@ -188,6 +218,7 @@ def test_entry_points():
     # Check if model views were added by checking the labels of menu items
     menu_items = {str(item.name): item for item in admin_app.admin.menu()}
     assert 'OneAndTwo' in menu_items  # Category for ModelOne and ModelTwo
+    assert 'Four' in menu_items  # Category for ModelOne and ModelTwo
     assert 'Model One' not in menu_items  # ModelOne should go to a category
     assert 'Model Two' not in menu_items  # ModelTwo should go to a category
     assert 'Model Three' in menu_items  # ModelThree goes straight to menu
@@ -203,3 +234,6 @@ def test_entry_points():
     assert not submenu_items['Model Two'].is_category()
     assert isinstance(submenu_items['Model One'], flask_admin.menu.MenuView)
     assert isinstance(submenu_items['Model Two'], flask_admin.menu.MenuView)
+    four_item = menu_items['Four'].get_children()[0]
+    assert four_item.name == 'View number Four'
+    assert isinstance(four_item, flask_admin.menu.MenuView)

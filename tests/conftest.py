@@ -33,6 +33,7 @@ import uuid
 
 import pytest
 from flask import Flask
+from flask_admin.base import BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_babelex import Babel
 from flask_login import LoginManager, UserMixin, current_user, login_user
@@ -65,6 +66,20 @@ class TestModel(db.Model):
 
 class TestModelView(ModelView):
     """AdminModelView of the TestModel."""
+
+
+class TestBase(BaseView):
+    """Base AdminView."""
+
+    @expose('/')
+    def index(self):
+        """Index page."""
+        return "HelloWorld"
+
+    @expose('/foo/')
+    def foo(self):
+        """Another page."""
+        return "Foobar!"
 
 
 class TestUser(UserMixin):
@@ -129,6 +144,7 @@ def app(request):
     InvenioAdmin(
         app, permission_factory=lambda x: Permission(action_admin_access))
     app.extensions['invenio-admin'].register_view(TestModelView, TestModel)
+    app.extensions['invenio-admin'].register_view(TestBase)
 
     # Create database
     with app.app_context():

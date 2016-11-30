@@ -73,6 +73,7 @@ def protected_adminview_factory(base_class):
     furhter restrictions if needed.
 
     :param base_class: Class to use as base class.
+    :type base_class: :class:`flask_admin.base.BaseView`
     :returns: Admin view class which provides authentication and authorization.
     """
     class ProtectedAdminView(base_class):
