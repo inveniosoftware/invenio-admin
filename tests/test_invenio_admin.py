@@ -35,6 +35,7 @@ from flask import Flask
 from flask_admin.contrib.sqla import ModelView
 from invenio_access.permissions import DynamicPermission
 from invenio_db import db
+from invenio_theme import InvenioTheme
 from mock import patch
 from pkg_resources import EntryPoint
 
@@ -60,6 +61,23 @@ def test_init():
     assert 'invenio-admin' not in app.extensions
     ext.init_app(app)
     assert 'invenio-admin' in app.extensions
+
+
+def test_invenio_theme_loading_order():
+    """Test base template set correctly by invenio_theme."""
+    app = Flask('testapp')
+    InvenioAdmin(app)
+    assert app.config.get('ADMIN_BASE_TEMPLATE') is None
+
+    app = Flask('testapp')
+    InvenioTheme(app)
+    InvenioAdmin(app)
+    assert app.config.get('ADMIN_BASE_TEMPLATE') is not None
+
+    app = Flask('testapp')
+    InvenioAdmin(app)
+    InvenioTheme(app)
+    assert app.config.get('ADMIN_BASE_TEMPLATE') is not None
 
 
 def test_default_permission():

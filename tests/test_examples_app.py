@@ -29,6 +29,7 @@ import os
 import signal
 import subprocess
 import time
+from os.path import abspath, dirname, join
 
 import pytest
 
@@ -72,3 +73,5 @@ def test_example_app(example_app):
     cmd = 'curl http://localhost:5000/admin/user/'
     output = subprocess.check_output(cmd, shell=True).decode('utf-8')
     assert 'info@inveniosoftware.org' in output
+    # Ensure we are using admin-lte template.
+    assert 'admin-lte' in output
