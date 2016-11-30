@@ -22,46 +22,25 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Mocks of DB Models and Admin's ModelViews for entrypoint testing."""
+"""Mocks of custom admin views for entrypoint testing."""
 
-from flask_admin.contrib.sqla import ModelView
-from invenio_db import db
-
-
-class ModelOne(db.Model):
-    """Test model with just one column."""
-
-    id = db.Column(db.Integer, primary_key=True)
-    """Id of the model."""
+from flask_admin.base import BaseView, expose
 
 
-class ModelTwo(db.Model):
-    """Test model with just one column."""
-
-    id = db.Column(db.Integer, primary_key=True)
-    """Id of the model."""
-
-
-class ModelOneModelView(ModelView):
+class Four(BaseView):
     """AdminModelView of the ModelOne."""
 
-    pass
+    @expose('/')
+    def index(self):
+        """Index page."""
+        return "Content of custom page Four"
 
-
-class ModelTwoModelView(ModelView):
-    """AdminModelView of the ModelTwo."""
-
-    pass
-
-# Old deprecated way of specifying admin entry points:
-one = dict(
-    modelview=ModelOneModelView,
-    model=ModelOne,
-    category='OneAndTwo'
-)
-# New way of specifying admin entry points:
-two = dict(
-    view_class=ModelTwoModelView,
-    args=[ModelTwo, db.session],
-    kwargs=dict(category='OneAndTwo')
- )
+four = dict(
+    view_class=Four,
+    kwargs=dict(
+        category='Four',
+        name='View number Four',
+        endpoint='four',
+        menu_icon_type='glyph',
+        menu_icon_value='glyphicon-home')
+    )

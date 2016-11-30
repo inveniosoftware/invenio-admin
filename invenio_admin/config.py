@@ -35,3 +35,6 @@ ADMIN_LOGOUT_ENDPOINT = 'security.logout'
 
 ADMIN_TEMPLATE_MODE = 'bootstrap3'
 """Flask-Admin template mode. Either ``bootstrap2`` or ``bootstrap3``."""
+
+ADMIN_PERMISSION_FACTORY = 'invenio_admin.permissions.admin_permission_factory'
+"""Permission factory for the admin views."""

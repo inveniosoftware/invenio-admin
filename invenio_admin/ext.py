@@ -26,13 +26,14 @@
 
 from __future__ import absolute_import, print_function
 
-import pkg_resources
+import warnings
 
+import pkg_resources
 from flask_admin import Admin, AdminIndexView
 from invenio_db import db
+from werkzeug import import_string
 
 from . import config
-from .permissions import admin_permission_factory
 from .views import protected_adminview_factory
 
 
@@ -53,19 +54,17 @@ class _AdminState(object):
         self.permission_factory = permission_factory
         self.view_class_factory = view_class_factory
 
-    def register_view(self, view_class, model_class, session=None, **kwargs):
+    def register_view(self, view_class, *args, **kwargs):
         """Register an admin view on this admin instance.
 
         :param view_class: The view class name passed to the view factory.
-        :param model_class: The model class name.
-        :param session: The session handler. If not specified, ``db.session``
-            will be used. (Default: ``None``)
-        :param kwargs: Passed to the ``view_class`` returned from the
-            ``view_class_factory``.
+        :param args: Positional arugments for view class.
+        :param kwargs: Keyword arguments to view class.
         """
-        view_class = self.view_class_factory(view_class)
-        self.admin.add_view(
-            view_class(model_class, session or db.session, **kwargs))
+        protected_view_class = self.view_class_factory(view_class)
+        if 'endpoint' not in kwargs:
+            kwargs['endpoint'] = view_class(*args, **kwargs).endpoint
+        self.admin.add_view(protected_view_class(*args, **kwargs))
 
     def load_entry_point_group(self, entry_point_group):
         """Load administration interface from entry point group.
@@ -74,15 +73,31 @@ class _AdminState(object):
         """
         for ep in pkg_resources.iter_entry_points(group=entry_point_group):
             admin_ep = dict(ep.load())
-            assert 'model' in admin_ep, \
-                "Admin's entrypoint dictionary must define the 'model'"
-            assert 'modelview' in admin_ep, \
-                "Admin's entrypoint dictionary must define the 'modelview'"
+            keys = tuple(
+                k in admin_ep for k in ('model', 'modelview', 'view_class'))
 
-            self.register_view(
-                admin_ep.pop('modelview'),
-                admin_ep.pop('model'),
-                **admin_ep)
+            if keys == (False, False, True):
+                self.register_view(
+                    admin_ep.pop('view_class'),
+                    *admin_ep.pop('args', []),
+                    **admin_ep.pop('kwargs', {}),
+                )
+            elif keys == (True, True, False):
+                warnings.warn(
+                    'Usage of model and modelview kwargs are deprecated in '
+                    'favor of view_class, args and kwargs.',
+                    PendingDeprecationWarning
+                )
+                self.register_view(
+                    admin_ep.pop('modelview'),
+                    admin_ep.pop('model'),
+                    admin_ep.pop('session', db.session),
+                    **admin_ep
+                )
+            else:
+                raise Exception(
+                    'Admin entry point dictionary must contain '
+                    'either "view_class" OR "model" and "modelview" keys.')
 
 
 class InvenioAdmin(object):
@@ -100,7 +115,7 @@ class InvenioAdmin(object):
     def init_app(self,
                  app,
                  entry_point_group='invenio_admin.views',
-                 permission_factory=admin_permission_factory,
+                 permission_factory=None,
                  view_class_factory=protected_adminview_factory,
                  index_view_class=AdminIndexView):
         """Flask application initialization.
@@ -122,7 +137,12 @@ class InvenioAdmin(object):
         """
         self.init_config(app)
 
+        default_permission_factory = app.config['ADMIN_PERMISSION_FACTORY']
+        permission_factory = permission_factory or \
+            import_string(default_permission_factory)
+
         # Create administration app.
+
         admin = Admin(
             app,
             name=app.config['ADMIN_APPNAME'],
