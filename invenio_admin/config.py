@@ -32,3 +32,6 @@ panel will be redirected to this endpoint."""
 
 ADMIN_LOGOUT_ENDPOINT = 'security.logout'
 """Endpoint name of logout view."""
+
+ADMIN_TEMPLATE_MODE = 'bootstrap3'
+"""Flask-Admin template mode. Either ``bootstrap2`` or ``bootstrap3``."""
