@@ -43,6 +43,7 @@ before_cache:
 
 services:
   - postgresql
+  - redis
 
 addons:
    postgresql: "9.4"

@@ -24,7 +24,6 @@
 
 """Test example app."""
 
-import json
 import os
 import signal
 import subprocess
@@ -67,9 +66,28 @@ def example_app():
     os.chdir(current_dir)
 
 
-def test_example_app(example_app):
+def test_example_app(example_app, tmpdir):
     """Test example app."""
-    # user admin page
+    # Index redirects to `/admin`
+    cmd = 'curl -L http://localhost:5000/'
+    output = subprocess.check_output(cmd, shell=True).decode('utf-8')
+    # Ensure that the protected view is not visible and that the flashed
+    # message is displayed.
+    assert 'browsing the admin view as an anonymous user' in output
+    assert 'Test Model' not in output
+
+    # Login and then access the custom admin page
+    cookie_jar = str((tmpdir.join('cookies')))
+    cmd = (
+        "curl -L -c {cookie_jar} http://localhost:5000/login/ "
+        "-d 'csrf_token=None&email=info@inveniosoftware.org&password=123456' "
+        "&& curl -L -b {cookie_jar} http://localhost:5000/admin/testmodel"
+        .format(cookie_jar=cookie_jar))
+    output = subprocess.check_output(cmd, shell=True).decode('utf-8')
+    # Ensure that the view is visible for the logged-in user
+    assert 'Test Model' in output
+
+    # User admin page
     cmd = 'curl http://localhost:5000/admin/user/'
     output = subprocess.check_output(cmd, shell=True).decode('utf-8')
     assert 'info@inveniosoftware.org' in output

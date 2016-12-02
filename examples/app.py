@@ -56,9 +56,10 @@ To reset the example application run:
 
 from __future__ import absolute_import, print_function
 
-from flask import Flask, redirect
+from flask import Flask, Markup, flash, redirect, request, url_for
 from flask_admin.contrib.sqla import ModelView
 from flask_babelex import Babel
+from flask_login import current_user
 from flask_mail import Mail
 from invenio_access import InvenioAccess
 from invenio_accounts import InvenioAccounts
@@ -82,6 +83,7 @@ app.config.update(
     MAIL_SUPPRESS_SEND=True,
     SECRET_KEY='CHANGE_ME',
     SECURITY_PASSWORD_SALT='CHANGE_ME_ALSO',
+    WTF_CSRF_ENABLED=False,
 )
 
 Babel(app)
@@ -94,6 +96,19 @@ InvenioI18N(app)
 InvenioTheme(app)
 admin_app = InvenioAdmin(app, view_class_factory=lambda x: x)
 app.register_blueprint(blueprint)
+
+
+@app.before_request
+def notify_login():
+    """Login reminder."""
+    if request.path.startswith('/admin') and not current_user.is_authenticated:
+        login_url = url_for('security.login')
+        flash(Markup('You are currently browsing the admin view as an '
+                     'anonymous user, so some menu items are hidden. Login '
+                     'with username <strong>info@inveniosoftware.org</strong> '
+                     'and password <strong>123456</strong> by clicking '
+                     '<a href="{login_url}">here</a>.'
+                     .format(login_url=login_url)))
 
 
 @app.route('/')
