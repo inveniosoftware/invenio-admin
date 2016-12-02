@@ -285,4 +285,4 @@ from .ext import InvenioAdmin
 from .proxies import current_admin
 from .version import __version__
 
-__all__ = ('__version__', 'InvenioAdmin')
+__all__ = ('__version__', 'InvenioAdmin', 'current_admin')

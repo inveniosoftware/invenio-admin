@@ -30,7 +30,6 @@ from flask import Blueprint, current_app, redirect, request, url_for
 from flask_babelex import lazy_gettext as _
 from flask_login import current_user
 from flask_menu import current_menu
-from werkzeug.local import LocalProxy
 
 from .proxies import current_admin
 
