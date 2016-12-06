@@ -80,7 +80,7 @@ Let's now define a simple model with a model view, and one base view:
 
 and register them in the admin extension:
 
->>> ext_admin.register_view(LunchModelView, Lunch)
+>>> ext_admin.register_view(LunchModelView, Lunch, db.session)
 >>> ext_admin.register_view(MenuCard)
 
 Finally, initialize the database and run the development server:
@@ -120,6 +120,7 @@ separate base view for statistics page. The content of the file is as follows:
     # invenio-diner/invenio_diner/admin.py
     from flask_admin.base import BaseView, expose
     from flask_admin.contrib.sqla import ModelView
+    from invenio_db import db
     from .models import Snack, Breakfast
 
     class SnackModelView(ModelView):
@@ -144,20 +145,20 @@ separate base view for statistics page. The content of the file is as follows:
             return "You have served 0 meals!"
 
     snack_adminview = {
-        'model': Snack,
-        'modelview': SnackModelView,
-        'category': 'Diner',
+        'view_class': Snack,
+        'args': [SnackModelView, db.session],
+        'kwargs': {'category': 'Diner'},
     }
 
     breakfast_adminview = {
-        'model': Breakfast,
-        'modelview': BreakfastModelView,
-        'category': 'Diner',
+        'view_class': Breakfast,
+        'args': [BreakfastModelView, db.session],
+        'kwargs': {'category': 'Diner'},
     }
 
     stats_adminview = {
-        'view': DinerStats,
-        'name': 'Invenio Diner Stats',
+        'view_class': DinerStats,
+        'kwargs': {'name': 'Invenio Diner Stats'},
     }
 
     __all__ = (
@@ -170,24 +171,16 @@ separate base view for statistics page. The content of the file is as follows:
 
     You have to define a dictionary for each BaseView and Model-ModelView pairs
     (see ``stats_adminview``, ``snack_adminview`` and ``breakfast_adminview``
-    above).
+    above) in order to have the admin views automatically registered via
+    entry points (see next section).
 
-    For ModelViews, the dictionary has to contain the keys ``model`` and
-    ``modelview``, which should point to class definitions of database model
-    and admin ModelView class.
-
-    For BaseViews the dictionary should specify a ``view`` key, which should
-    point to a custom BaseView class.
-
-    All keys other than ``view``, ``model`` and ``modelview`` are passed as
-    keyword arguments to the constructors of
-    :class:`flask_admin.contrib.sqla.ModelView` and
-    :class:`flask_admin.base.BaseView`.
+    The ``args`` and ``kwargs`` keys in the dictionaries are passed to the
+    constructor of the view class once it is intialized.
 
 Registering the entry point
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The default way of adding admin views to the admin panel is though the
-setuptools entry point discovery. To do that, a newly created module has to
+The default way of adding admin views to the admin panel is though
+setuptools' entry point discovery. To do that, a newly created module has to
 register an entry point under the group ``invenio_admin.views`` inside its
 ``setup.py`` as follows:
 
@@ -207,7 +200,7 @@ register an entry point under the group ``invenio_admin.views`` inside its
 
 Authentication and authorization
 --------------------------------
-By default Invenio-Admin protects the admin views from un-authenticated users
+By default Invenio-Admin protects the admin views from unauthenticated users
 with Flask-Login and restricts the access on a per-permission basis using
 Flask-Security. In order to login to a Invenio-Admin panel the user
 needs to be authenticated using Flask-Login and have a Flask-Security

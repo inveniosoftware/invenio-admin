@@ -80,7 +80,7 @@ class _AdminState(object):
                 self.register_view(
                     admin_ep.pop('view_class'),
                     *admin_ep.pop('args', []),
-                    **admin_ep.pop('kwargs', {}),
+                    **admin_ep.pop('kwargs', {})
                 )
             elif keys == (True, True, False):
                 warnings.warn(
