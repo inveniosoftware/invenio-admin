@@ -31,6 +31,7 @@ import importlib
 
 import flask_admin
 import pkg_resources
+import pytest
 from flask import Flask
 from flask_admin.contrib.sqla import ModelView
 from invenio_access.permissions import DynamicPermission
@@ -78,6 +79,20 @@ def test_invenio_theme_loading_order():
     InvenioAdmin(app)
     InvenioTheme(app)
     assert app.config.get('ADMIN_BASE_TEMPLATE') is not None
+
+
+def test_base_template_override():
+    """Test base template is set up correctly."""
+    app = Flask('testapp')
+    base_template = 'test_base_template.html'
+    app.config['ADMIN_BASE_TEMPLATE'] = base_template
+    InvenioTheme(app)
+    state = InvenioAdmin(app)
+    assert app.config.get('ADMIN_BASE_TEMPLATE') == base_template
+
+    # Force call of before_first_request registered triggers.
+    app.try_trigger_before_first_request_functions()
+    assert state.admin.base_template == base_template
 
 
 def test_default_permission():
@@ -209,6 +224,9 @@ class MockEntryPoint(EntryPoint):
 def _mock_iter_entry_points(group=None):
     """Mock the entry point iterator."""
     data = {
+        'invenio_admin.views_invalid': [
+            MockEntryPoint('zero', 'demo.onetwo'),
+        ],
         'invenio_admin.views': [
             MockEntryPoint('one', 'demo.onetwo'),
             MockEntryPoint('two', 'demo.onetwo'),
@@ -220,6 +238,18 @@ def _mock_iter_entry_points(group=None):
     for key in names:
         for entry_point in data[key]:
             yield entry_point
+
+
+@patch('pkg_resources.iter_entry_points', _mock_iter_entry_points)
+def test_invalid_entry_points():
+    """Test invalid admin views discovery through entry points."""
+    app = Flask('testapp')
+    admin_app = InvenioAdmin()
+    with pytest.raises(Exception) as e:
+        admin_app.init_app(
+            app, entry_point_group='invenio_admin.views_invalid'
+        )
+    assert '"view_class"' in str(e)
 
 
 @patch('pkg_resources.iter_entry_points', _mock_iter_entry_points)

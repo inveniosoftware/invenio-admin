@@ -53,6 +53,9 @@ class ModelTwoModelView(ModelView):
 
     pass
 
+# Invalid admin entry point:
+zero = {}
+
 # Old deprecated way of specifying admin entry points:
 one = dict(
     modelview=ModelOneModelView,
