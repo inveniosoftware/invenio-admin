@@ -67,7 +67,7 @@ Let's now define a simple model with a model view, and one base view:
 ...     __tablename__ = 'diner_lunch'
 ...     id = db.Column(db.Integer, primary_key=True)
 ...     meal_name = db.Column(db.String(255), nullable=False)
-...     is_vegetarian = db.Column(db.Boolean, default=False)
+...     is_vegetarian = db.Column(db.Boolean(name='is_v'), default=False)
 ...
 >>> class LunchModelView(ModelView):
 ...     can_create = True
