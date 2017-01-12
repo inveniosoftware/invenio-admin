@@ -1,15 +1,13 @@
 ========================
- Invenio-Admin v1.0.0a3
+ Invenio-Admin v1.0.0b1
 ========================
 
-Invenio-Admin v1.0.0 was released on March 1, 2016.
+Invenio-Admin v1.0.0 was released on January 12, 2017.
 
 About
 -----
 
 Administration interface for Invenio.
-
-*This is an experimental developer preview release.*
 
 What's new
 ----------
@@ -19,7 +17,7 @@ What's new
 Installation
 ------------
 
-   $ pip install invenio-admin==1.0.0a3
+   $ pip install invenio-admin==1.0.0b1
 
 Documentation
 -------------
