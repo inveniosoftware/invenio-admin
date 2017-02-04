@@ -14,7 +14,7 @@ export FLASK_APP=app.py
 # Install specific dependencies
 mkdir $DIR/instance
 
-npm install -g node-sass clean-css requirejs uglify-js
+npm install -g node-sass clean-css clean-css-cli requirejs uglify-js
 
 # Install assets
 flask npm
