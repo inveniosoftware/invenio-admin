@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015, 2016 CERN.
+# Copyright (C) 2015, 2016, 2017 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -23,6 +23,8 @@
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
 """Minimal Flask application example for development.
+
+SPHINX-START
 
 First, install Invenio-Admin, setup the application and load fixture data by
 running:
@@ -52,14 +54,15 @@ To reset the example application run:
 .. code-block:: console
 
     $ ./app-teardown.sh
+
+SPHINX-END
 """
 
 from __future__ import absolute_import, print_function
 
-from flask import Flask, Markup, flash, redirect, request, url_for
+from flask import Flask, Markup, flash, redirect
 from flask_admin.contrib.sqla import ModelView
 from flask_babelex import Babel
-from flask_login import current_user
 from flask_mail import Mail
 from invenio_access import InvenioAccess
 from invenio_accounts import InvenioAccounts
