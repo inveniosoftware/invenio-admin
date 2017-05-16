@@ -27,12 +27,6 @@
 from __future__ import print_function
 
 import os
-import sys
-
-import sphinx.environment
-
-# Add example folder to sys.path
-sys.path.append('examples')
 
 # -- General configuration ------------------------------------------------
 
