@@ -42,7 +42,8 @@ blueprint = Blueprint(
 def _has_admin_access():
     """Function used to check if a user has any admin access."""
     return current_user.is_authenticated and \
-        current_admin.permission_factory(current_admin.admin.index_view).can()
+           current_admin.permission_factory(
+               current_admin.admin.index_view).can()
 
 
 @blueprint.before_app_first_request
@@ -53,8 +54,7 @@ def init_menu():
     item.register(
         "admin.index",
         # NOTE: Menu item text (icon replaced by a cogs icon).
-        _('%(icon)s Adminstration',
-            icon='<i class="fa fa-cogs fa-fw"></i>'),
+        _('%(icon)s Administration', icon='<i class="fa fa-cogs fa-fw"></i>'),
         visible_when=_has_admin_access,
         order=100)
 
@@ -65,11 +65,10 @@ def protected_adminview_factory(base_class):
     The factory will ensure that the admin view will check if a user is
     authenticated and has the necessary permissions (as defined by the
     permission factory).
-
     The factory creates a new class using the provided class as base class
     and overwrites ``is_accessible()`` and ``inaccessible_callback()``
     methods. Super is called for both methods, so the base class can implement
-    furhter restrictions if needed.
+    further restrictions if needed.
 
     :param base_class: Class to use as base class.
     :type base_class: :class:`flask_admin.base.BaseView`
@@ -78,11 +77,27 @@ def protected_adminview_factory(base_class):
     class ProtectedAdminView(base_class):
         """Admin view class protected by authentication."""
 
+        def _handle_view(self, name, **kwargs):
+            """Override Talisman CSP header configuration for admin views.
+
+            Flask-Admin extension is not CSP compliant (see:
+            https://github.com/flask-admin/flask-admin/issues/1135).
+            To avoid UI malfunctions, the CSP header (globally set on each
+            request by Talisman extension) must be overridden and removed.
+            Remove this code if and when Flask-Admin will be completely CSP
+            compliant.
+            """
+            invenio_app = current_app.extensions.get('invenio-app', None)
+            if invenio_app:
+                setattr(invenio_app.talisman.local_options,
+                        'content_security_policy', None)
+            return super(ProtectedAdminView, self)._handle_view(name, **kwargs)
+
         def is_accessible(self):
             """Require authentication and authorization."""
             return current_user.is_authenticated and \
-                current_admin.permission_factory(self).can() and \
-                super(ProtectedAdminView, self).is_accessible()
+                   current_admin.permission_factory(self).can() and \
+                   super(ProtectedAdminView, self).is_accessible()
 
         def inaccessible_callback(self, name, **kwargs):
             """Redirect to login if user is not logged in.

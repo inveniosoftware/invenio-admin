@@ -283,3 +283,31 @@ def test_entry_points():
     four_item = menu_items['Four'].get_children()[0]
     assert four_item.name == 'View number Four'
     assert isinstance(four_item, flask_admin.menu.MenuView)
+
+
+def test_talisman_csp_config_overridden(app):
+    """Test that the CSP config of Talisman is set to None."""
+    class Talisman:
+        """Fake Talisman class."""
+        def __init__(self):
+            from werkzeug.local import Local
+            self.local_options = Local()
+            setattr(self.local_options, 'content_security_policy',
+                    "'default-src': '\'self\'")
+
+    class InvenioApp:
+        """Fake Invenio App class."""
+        def __init__(self, talisman):
+            print('ciao')
+            self.talisman = talisman
+
+    app.extensions['invenio-app'] = InvenioApp(Talisman())
+    invenio_app = app.extensions['invenio-app']
+    assert invenio_app.talisman.local_options.content_security_policy
+
+    with app.test_client() as client:
+        res = client.get('/login/?user=1')
+        assert res.status_code == 200
+        res = client.get('/admin/')
+        assert res.status_code == 200
+        assert not invenio_app.talisman.local_options.content_security_policy
