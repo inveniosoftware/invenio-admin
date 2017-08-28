@@ -34,8 +34,8 @@ history = open('CHANGES.rst').read()
 tests_require = [
     'check-manifest>=0.25',
     'coverage>=4.0',
-    'invenio-accounts>=1.0.0a13',
-    'invenio-theme>=1.0.0a17',
+    'invenio-accounts>=1.0.0b9',
+    'invenio-theme>=1.0.0b4',
     'isort>=4.2.2',
     'mock>=1.3.0',
     'pydocstyle>=1.0.0',
@@ -50,7 +50,7 @@ extras_require = {
         'Sphinx>=1.4.2',
     ],
     'access': [
-        'invenio-access>=1.0.0a3',
+        'invenio-access>=1.0.0b1',
     ],
     'tests': tests_require,
 }
@@ -70,7 +70,7 @@ install_requires = [
     'Flask-Login>=0.3.0',
     'Flask-Menu>=0.5.0',
     'Flask-Principal>=0.4.0',
-    'invenio-db>=1.0.0b1',
+    'invenio-db>=1.0.0b8',
 ]
 
 packages = find_packages()

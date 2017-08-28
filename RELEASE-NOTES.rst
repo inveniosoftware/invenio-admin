@@ -1,8 +1,8 @@
 ========================
- Invenio-Admin v1.0.0b3
+ Invenio-Admin v1.0.0b4
 ========================
 
-Invenio-Admin v1.0.0b3 was released on August 10, 2017.
+Invenio-Admin v1.0.0b4 was released on August 28, 2017.
 
 About
 -----
@@ -17,7 +17,7 @@ What's new
 Installation
 ------------
 
-   $ pip install invenio-admin==1.0.0b3
+   $ pip install invenio-admin==1.0.0b4
 
 Documentation
 -------------
