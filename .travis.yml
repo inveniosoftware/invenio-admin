@@ -14,9 +14,6 @@ sudo: false
 
 language: python
 
-matrix:
-  fast_finish: true
-
 cache:
   directories:
     - $HOME/.cache/pip
@@ -43,8 +40,10 @@ python:
   - "pypy"
 
 matrix:
+  fast_finish: true
   allow_failures:
     - python: pypy
+    - env: REQUIREMENTS=devel SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/travis"
 
 before_install:
   - |
