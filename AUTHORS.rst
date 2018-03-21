@@ -5,14 +5,17 @@
     Invenio is free software; you can redistribute it and/or modify it
     under the terms of the MIT License; see LICENSE file for more details.
 
-Authors
-=======
+Contributors
+============
 
-Invenio module that adds administration panel to the system.
-
-- Jiri Kuncar <jiri.kuncar@cern.ch>
-- Krzysztof Nowak <k.nowak@cern.ch>
-- Lars Holm Nielsen <lars.holm.nielsen@cern.ch>
-- Leonardo Rossi <leonardo.r@cern.ch>
-- Sami Hiltunen <sami.mikael.hiltunen@cern.ch>
-- Tibor Simko <tibor.simko@cern.ch>
+- Alexander Ioannidis
+- Alizee Pace
+- Esteban J. G. Gabancho
+- Jiri Kuncar
+- Krzysztof Nowak
+- Lars Holm Nielsen
+- Leonardo Rossi
+- Nicola Tarocco
+- Nikos Filippakis
+- Sami Hiltunen
+- Tibor Simko
