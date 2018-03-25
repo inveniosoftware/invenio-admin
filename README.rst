@@ -9,6 +9,9 @@
  Invenio-Admin
 ===============
 
+.. image:: https://img.shields.io/github/license/inveniosoftware/invenio-admin.svg
+        :target: https://github.com/inveniosoftware/invenio-admin/blob/master/LICENSE
+
 .. image:: https://img.shields.io/travis/inveniosoftware/invenio-admin.svg
         :target: https://travis-ci.org/inveniosoftware/invenio-admin
 
