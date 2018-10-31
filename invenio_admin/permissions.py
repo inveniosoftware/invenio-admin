@@ -8,7 +8,6 @@
 
 """Permissions for Invenio-Admin."""
 
-import pkg_resources
 from flask_principal import ActionNeed
 
 action_admin_access = ActionNeed('admin-access')
@@ -18,7 +17,7 @@ action_admin_access = ActionNeed('admin-access')
 def admin_permission_factory(admin_view):
     """Default factory for creating a permission for an admin.
 
-    It tries to load a :class:`invenio_access.permissions.DynamicPermission`
+    It tries to load a :class:`invenio_access.permissions.Permission`
     instance if `invenio_access` is installed.
     Otherwise, it loads a :class:`flask_principal.Permission` instance.
 
@@ -27,9 +26,8 @@ def admin_permission_factory(admin_view):
     :returns: Permission instance.
     """
     try:
-        pkg_resources.get_distribution('invenio-access')
-        from invenio_access.permissions import DynamicPermission as Permission
-    except pkg_resources.DistributionNotFound:
+        from invenio_access import Permission
+    except ImportError:
         from flask_principal import Permission
 
     return Permission(action_admin_access)
