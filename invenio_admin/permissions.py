@@ -8,6 +8,7 @@
 
 """Permissions for Invenio-Admin."""
 
+import pkg_resources
 from flask_principal import ActionNeed
 
 action_admin_access = ActionNeed('admin-access')
@@ -26,8 +27,9 @@ def admin_permission_factory(admin_view):
     :returns: Permission instance.
     """
     try:
+        pkg_resources.get_distribution('invenio-access')
         from invenio_access import Permission
-    except ImportError:
+    except pkg_resources.DistributionNotFound:
         from flask_principal import Permission
 
     return Permission(action_admin_access)

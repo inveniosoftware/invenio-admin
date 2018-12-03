@@ -13,3 +13,6 @@ export FLASK_APP=app.py
 
 # Create a user
 flask users create info@inveniosoftware.org -a --password 123456
+flask roles create admin
+flask roles add info@inveniosoftware.org admin
+flask access allow admin-access role admin
