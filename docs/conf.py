@@ -320,7 +320,7 @@ intersphinx_mapping = {
     'https://docs.python.org/': None,
     'Flask-Admin': ('https://flask-admin.readthedocs.io/en/latest/', None),
     'Flask-Principal': ('http://pythonhosted.org/Flask-Principal', None),
-    'invenio-access': ('http://pythonhosted.org/invenio-access', None),
+    'invenio-access': ('https://invenio-access.readthedocs.io/en/latest/', None),
 }
 
 # Autodoc configuraton.
