@@ -48,7 +48,7 @@ from flask import Flask, Markup, flash, redirect
 from flask_admin.contrib.sqla import ModelView
 from flask_babelex import Babel
 from flask_mail import Mail
-from invenio_access import InvenioAccess
+from invenio_access import InvenioAccess, Permission
 from invenio_accounts import InvenioAccounts
 from invenio_accounts.views import blueprint as accounts_blueprint
 from invenio_assets import InvenioAssets
@@ -57,6 +57,7 @@ from invenio_i18n import InvenioI18N
 from invenio_theme import InvenioTheme
 
 from invenio_admin import InvenioAdmin
+from invenio_admin.permissions import action_admin_access
 from invenio_admin.views import blueprint as admin_blueprint
 from invenio_admin.views import protected_adminview_factory
 
@@ -83,7 +84,8 @@ InvenioAccess(app)
 InvenioAssets(app)
 InvenioI18N(app)
 InvenioTheme(app)
-admin_app = InvenioAdmin(app)
+admin_app = InvenioAdmin(
+    app, permission_factory=lambda x: Permission(action_admin_access))
 app.register_blueprint(accounts_blueprint)
 app.register_blueprint(admin_blueprint)
 

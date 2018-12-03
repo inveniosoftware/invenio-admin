@@ -24,6 +24,7 @@ from flask_login import LoginManager, UserMixin, current_user, login_user
 from flask_menu import Menu
 from flask_principal import Identity, Permission, Principal, UserNeed, \
     identity_changed, identity_loaded
+from invenio_access import InvenioAccess
 from invenio_db import InvenioDB, db
 from sqlalchemy.dialects import mysql
 from sqlalchemy_utils.functions import create_database, database_exists, \
@@ -100,6 +101,7 @@ def app(request):
     )
     Babel(app)
     InvenioDB(app)
+    InvenioAccess(app)
     Principal(app)
     LoginManager(app)
     Menu(app)

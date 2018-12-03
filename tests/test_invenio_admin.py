@@ -18,7 +18,7 @@ import pkg_resources
 import pytest
 from flask import Flask
 from flask_admin.contrib.sqla import ModelView
-from invenio_access.permissions import DynamicPermission
+from invenio_access.permissions import Permission
 from invenio_db import db
 from invenio_theme import InvenioTheme
 from mock import patch
@@ -79,15 +79,14 @@ def test_base_template_override():
     assert state.admin.base_template == base_template
 
 
-def test_default_permission():
+def test_default_permission(app):
     """Test loading of default permission class."""
-    with patch('pkg_resources.get_distribution') as get_distribution:
-        get_distribution.side_effect = pkg_resources.DistributionNotFound
-        assert not isinstance(
-            admin_permission_factory(None),
-            DynamicPermission)
+    with app.app_context():
+        with patch('pkg_resources.get_distribution') as get_distribution:
+            get_distribution.side_effect = pkg_resources.DistributionNotFound
+            assert not isinstance(admin_permission_factory(None), Permission)
 
-    assert isinstance(admin_permission_factory(None), DynamicPermission)
+    assert isinstance(admin_permission_factory(None), Permission)
 
 
 def test_admin_view_authenticated(app):
