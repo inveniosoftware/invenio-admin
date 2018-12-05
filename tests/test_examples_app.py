@@ -73,5 +73,3 @@ def test_example_app(example_app, tmpdir):
         cookie_jar=cookie_jar)
     output = subprocess.check_output(cmd, shell=True).decode('utf-8')
     assert 'info@inveniosoftware.org' in output
-    # Ensure we are using admin-lte template.
-    assert 'admin-lte' in output
