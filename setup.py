@@ -18,8 +18,8 @@ history = open('CHANGES.rst').read()
 tests_require = [
     'check-manifest>=0.25',
     'coverage>=4.0',
-    'invenio-accounts>=1.0.0',
-    'invenio-theme>=1.0.0',
+    'invenio-accounts>=1.0.0,<1.1.0',
+    'invenio-theme>=1.0.0,<1.1.0',
     'isort>=4.2.2',
     'mock>=1.3.0',
     'pydocstyle>=1.0.0',
@@ -33,7 +33,7 @@ extras_require = {
         'Sphinx>=1.4.2',
     ],
     'access': [
-        'invenio-access>=1.0.0',
+        'invenio-access>=1.0.0,<1.1.0',
     ],
     'tests': tests_require,
 }
