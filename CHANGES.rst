@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version 1.0.1 (released 2018-12-26)
+
+- Minimum version of Flask-Admin bumped to v1.5.3 due to Cross-Site Scripting
+  vulnerability in previous versions.
+
 Version 1.0.0 (released 2018-03-23)
 
 - Initial public release.
