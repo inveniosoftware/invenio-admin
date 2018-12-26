@@ -13,6 +13,11 @@ Version 1.1.1 (released 2018-12-26)
 - Minimum version of Flask-Admin bumped to v1.5.3 due to Cross-Site Scripting
   vulnerability in previous versions.
 
+Version 1.0.1 (released 2018-12-26)
+
+- Minimum version of Flask-Admin bumped to v1.5.3 due to Cross-Site Scripting
+  vulnerability in previous versions.
+
 Version 1.1.0 (released 2018-12-14)
 
 - Changed to using Webpack for static assets management instead of using
