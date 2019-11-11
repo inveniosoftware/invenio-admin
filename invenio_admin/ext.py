@@ -15,7 +15,7 @@ import warnings
 import pkg_resources
 from flask_admin import Admin, AdminIndexView
 from invenio_db import db
-from werkzeug import import_string
+from werkzeug.utils import import_string
 
 from . import config
 from .views import protected_adminview_factory
