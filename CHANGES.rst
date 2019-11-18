@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version 1.1.1 (released 2019-11-18)
+
+- Fixes werkzeug deprecation warning.
+
 Version 1.1.1 (released 2018-12-26)
 
 - Minimum version of Flask-Admin bumped to v1.5.3 due to Cross-Site Scripting
