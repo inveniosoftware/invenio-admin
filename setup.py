@@ -18,14 +18,13 @@ history = open('CHANGES.rst').read()
 tests_require = [
     'check-manifest>=0.25',
     'coverage>=4.0',
-    'invenio-accounts>=1.0.0',
     'invenio-theme>=1.1.1',
     'isort>=4.2.2',
     'mock>=1.3.0',
     'pydocstyle>=1.0.0',
     'pytest-cov>=1.8.0',
     'pytest-pep8>=1.0.6',
-    'pytest>=2.8.0',
+    'pytest>=3.8.1',
 ]
 
 extras_require = {
@@ -48,11 +47,11 @@ setup_requires = [
 ]
 
 install_requires = [
-    'Flask>=0.11.1',
-    'Flask-Admin>=1.5.3',
-    'Flask-Login>=0.3.0',
+    'Flask-Admin>=1.5.5',
     'Flask-Menu>=0.5.0',
     'Flask-Principal>=0.4.0',
+    'invenio-accounts>=1.1.3',
+    'invenio-base>=1.2.2',
     'invenio-db>=1.0.0',
 ]
 

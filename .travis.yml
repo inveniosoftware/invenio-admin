@@ -10,8 +10,7 @@
 notifications:
   email: false
 
-sudo: false
-
+dist: xenial
 language: python
 
 cache:
@@ -35,8 +34,8 @@ env:
   - REQUIREMENTS=devel SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/travis"
 
 python:
-  - "2.7"
-  - "3.5"
+  - "3.6"
+  - "3.7"
 
 matrix:
   fast_finish: true
@@ -44,22 +43,10 @@ matrix:
     - env: REQUIREMENTS=devel SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/travis"
 
 before_install:
-  - |
-      if [ "$TRAVIS_PYTHON_VERSION" = "pypy" ]; then
-        export PYENV_ROOT="$HOME/.pyenv"
-        if [ -f "$PYENV_ROOT/bin/pyenv" ]; then
-          pushd "$PYENV_ROOT" && git pull && popd
-        else
-          rm -rf "$PYENV_ROOT" && git clone --depth 1 https://github.com/yyuu/pyenv.git "$PYENV_ROOT"
-        fi
-        export PYPY_VERSION="5.3.1"
-        "$PYENV_ROOT/bin/pyenv" install --skip-existing "pypy-$PYPY_VERSION"
-        virtualenv --python="$PYENV_ROOT/versions/pypy-$PYPY_VERSION/bin/python" "$HOME/virtualenvs/pypy-$PYPY_VERSION"
-        source "$HOME/virtualenvs/pypy-$PYPY_VERSION/bin/activate"
-      fi
+  - "pip uninstall -y six"
   - "nvm install 6; nvm use 6"
   - "travis_retry pip install --upgrade pip setuptools py"
-  - "travis_retry pip install twine wheel coveralls requirements-builder"
+  - "travis_retry pip install wheel coveralls requirements-builder"
   - "requirements-builder --level=min setup.py > .travis-lowest-requirements.txt"
   - "requirements-builder --level=pypi setup.py > .travis-release-requirements.txt"
   - "requirements-builder --level=dev --req requirements-devel.txt setup.py > .travis-devel-requirements.txt"
@@ -82,5 +69,5 @@ deploy:
   distributions: "compile_catalog sdist bdist_wheel"
   on:
     tags: true
-    python: "2.7"
+    python: "3.6"
     condition: $REQUIREMENTS = release
