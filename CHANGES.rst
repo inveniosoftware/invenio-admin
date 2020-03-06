@@ -8,7 +8,11 @@
 Changes
 =======
 
-Version 1.1.1 (released 2019-11-18)
+Version 1.2.0 (released 2020-03-06)
+
+- Changes flask dependency to centrally managed
+
+Version 1.1.2 (released 2019-11-18)
 
 - Fixes werkzeug deprecation warning.
 
