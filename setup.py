@@ -18,7 +18,7 @@ history = open('CHANGES.rst').read()
 tests_require = [
     'check-manifest>=0.25',
     'coverage>=4.0',
-    'invenio-accounts>=1.0.0',
+    'invenio-accounts>=1.1.4',
     'invenio-theme>=1.1.1',
     'isort>=4.2.2',
     'mock>=1.3.0',
@@ -49,7 +49,7 @@ setup_requires = [
 
 install_requires = [
     'Flask>=0.11.1',
-    'Flask-Admin>=1.5.3',
+    'Flask-Admin>=1.5.6',
     'Flask-Login>=0.3.0',
     'Flask-Menu>=0.5.0',
     'Flask-Principal>=0.4.0',

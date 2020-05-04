@@ -8,7 +8,14 @@
 Changes
 =======
 
-Version 1.1.1 (released 2019-11-18)
+Version 1.1.3 (released TBD)
+
+- Minimum version of Invenio-Accounts bumped to v1.1.4 due WTForms moving the
+  email validation to an optional dependency.
+- Minimum version of Flask-Admin bumped to v1.5.6 due to a fixed SQLAlchemy
+  1.3.6 compatibility issue
+
+Version 1.1.2 (released 2019-11-18)
 
 - Fixes werkzeug deprecation warning.
 
