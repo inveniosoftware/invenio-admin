@@ -8,9 +8,19 @@
 Changes
 =======
 
+Version 1.2.1 (released TBD)
+
+- Minimum version of Invenio-Accounts bumped to v1.1.4 due WTForms moving the
+  email validation to an optional dependency.
+
 Version 1.2.0 (released 2020-03-06)
 
 - Changes flask dependency to centrally managed
+
+Version 1.1.3 (released TBD)
+
+- Minimum version of Invenio-Accounts bumped to v1.1.4 due WTForms moving the
+  email validation to an optional dependency.
 
 Version 1.1.2 (released 2019-11-18)
 

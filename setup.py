@@ -50,7 +50,7 @@ install_requires = [
     'Flask-Admin>=1.5.5',
     'Flask-Menu>=0.5.0',
     'Flask-Principal>=0.4.0',
-    'invenio-accounts>=1.1.3',
+    'invenio-accounts>=1.2.1',
     'invenio-base>=1.2.2',
     'invenio-db>=1.0.0',
 ]
