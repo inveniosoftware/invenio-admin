@@ -17,6 +17,8 @@ Version 1.1.3 (released TBD)
 - Maximum version of Invenio-Access set to 1.4.0 due to circular dependency.
 - Minimum version of Flask bumped to 1.0.4 and from six to 1.12.0 due to
   dependency management missmatches.
+- Maximum version of Flask-Login set to 0.5.0 due to dependency management
+  missmatches.
 
 Version 1.1.2 (released 2019-11-18)
 
