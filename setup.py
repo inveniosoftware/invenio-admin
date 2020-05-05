@@ -33,7 +33,7 @@ extras_require = {
         'Sphinx>=1.4.2',
     ],
     'access': [
-        'invenio-access>=1.0.0',
+        'invenio-access>=1.0.0,<1.4.0',
     ],
     'tests': tests_require,
 }
@@ -48,12 +48,13 @@ setup_requires = [
 ]
 
 install_requires = [
-    'Flask>=0.11.1',
+    'Flask>=1.0.4',
     'Flask-Admin>=1.5.6',
     'Flask-Login>=0.3.0',
     'Flask-Menu>=0.5.0',
     'Flask-Principal>=0.4.0',
     'invenio-db>=1.0.0',
+    'six>=1.12.0',
 ]
 
 packages = find_packages()

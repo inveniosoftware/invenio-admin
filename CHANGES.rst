@@ -14,6 +14,9 @@ Version 1.1.3 (released TBD)
   email validation to an optional dependency.
 - Minimum version of Flask-Admin bumped to v1.5.6 due to a fixed SQLAlchemy
   1.3.6 compatibility issue
+- Maximum version of Invenio-Access set to 1.4.0 due to circular dependency.
+- Minimum version of Flask bumped to 1.0.4 and from six to 1.12.0 due to
+  dependency management missmatches.
 
 Version 1.1.2 (released 2019-11-18)
 
