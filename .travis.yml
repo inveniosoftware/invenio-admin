@@ -35,8 +35,8 @@ env:
   - REQUIREMENTS=devel SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/travis"
 
 python:
-  - "2.7"
-  - "3.5"
+  - "3.6"
+  - "3.7"
 
 matrix:
   fast_finish: true
@@ -82,5 +82,4 @@ deploy:
   distributions: "compile_catalog sdist bdist_wheel"
   on:
     tags: true
-    python: "2.7"
-    condition: $REQUIREMENTS = release
+  skip_existing: true
