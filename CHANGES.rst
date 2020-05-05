@@ -8,7 +8,7 @@
 Changes
 =======
 
-Version 1.2.1 (released TBD)
+Version 1.2.1 (released 2020-05-05)
 
 - Minimum version of Invenio-Accounts bumped to v1.1.4 due WTForms moving the
   email validation to an optional dependency.
@@ -19,12 +19,18 @@ Version 1.2.0 (released 2020-03-06)
 
 - Changes flask dependency to centrally managed
 
-Version 1.1.3 (released TBD)
+Version 1.1.3 (released 2020-05-05)
 
 - Minimum version of Invenio-Accounts bumped to v1.1.4 due WTForms moving the
   email validation to an optional dependency.
 - Minimum version of Flask-Admin bumped to v1.5.6 due to a fixed SQLAlchemy
   1.3.6 compatibility issue
+- Maximum version of Invenio-Access set to 1.4.0 due to circular dependency.
+- Minimum version of Flask bumped to 1.0.4 and from six to 1.12.0 due to
+  dependency management missmatches.
+- Maximum version of Flask-Login set to 0.5.0 due to dependency management
+  missmatches.
+
 
 Version 1.1.2 (released 2019-11-18)
 
