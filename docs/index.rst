@@ -19,7 +19,6 @@ Invenio-Admin.
    installation
    configuration
    usage
-   examplesapp
 
 
 API Reference
