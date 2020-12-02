@@ -24,4 +24,5 @@ class ModelThreeModelView(ModelView):
 
     pass
 
+
 three = dict(modelview=ModelThreeModelView, model=ModelThree)

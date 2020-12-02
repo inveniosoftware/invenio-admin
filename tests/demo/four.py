@@ -19,6 +19,7 @@ class Four(BaseView):
         """Index page."""
         return "Content of custom page Four"
 
+
 four = dict(
     view_class=Four,
     kwargs=dict(
