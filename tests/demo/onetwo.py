@@ -37,6 +37,7 @@ class ModelTwoModelView(ModelView):
 
     pass
 
+
 # Invalid admin entry point:
 zero = {}
 

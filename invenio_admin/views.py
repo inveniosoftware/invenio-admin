@@ -26,8 +26,8 @@ blueprint = Blueprint(
 def _has_admin_access():
     """Function used to check if a user has any admin access."""
     return current_user.is_authenticated and \
-           current_admin.permission_factory(
-               current_admin.admin.index_view).can()
+        current_admin.permission_factory(
+            current_admin.admin.index_view).can()
 
 
 @blueprint.before_app_first_request
@@ -80,8 +80,8 @@ def protected_adminview_factory(base_class):
         def is_accessible(self):
             """Require authentication and authorization."""
             return current_user.is_authenticated and \
-                   current_admin.permission_factory(self).can() and \
-                   super(ProtectedAdminView, self).is_accessible()
+                current_admin.permission_factory(self).can() and \
+                super(ProtectedAdminView, self).is_accessible()
 
         def inaccessible_callback(self, name, **kwargs):
             """Redirect to login if user is not logged in.
