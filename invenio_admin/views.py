@@ -14,6 +14,8 @@ from flask import Blueprint, current_app, redirect, request, url_for
 from flask_babelex import lazy_gettext as _
 from flask_login import current_user
 from flask_menu import current_menu
+from invenio_theme.proxies import current_theme_icons
+from speaklater import make_lazy_string
 
 from .proxies import current_admin
 
@@ -38,7 +40,7 @@ def init_menu():
     item.register(
         "admin.index",
         # NOTE: Menu item text (icon replaced by a cogs icon).
-        _('%(icon)s Administration', icon='<i class="fa fa-cogs fa-fw"></i>'),
+        _('%(icon)s Administration', icon=f'<i class="{current_theme_icons.cogs}"></i>'),
         visible_when=_has_admin_access,
         order=100)
 
