@@ -8,9 +8,14 @@
 Changes
 =======
 
-Version 1.2.2 (released 2020-12-17)
+Version 1.3.0 (released 2020-12-17)
 
 - Adds theme dependent icons to the settings menu.
+
+Version 1.2.2 (released 2020-12-17)
+
+- This release was available on PyPI for about 1 hour, but was removed because
+  it was breaking compatibility. Instead v1.3 was released.
 
 Version 1.2.1 (released 2020-05-05)
 
