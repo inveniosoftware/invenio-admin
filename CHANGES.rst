@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version 1.2.2 (released 2020-12-17)
+
+- Adds theme dependent icons to the settings menu.
+
 Version 1.2.1 (released 2020-05-05)
 
 - Minimum version of Invenio-Accounts bumped to v1.1.4 due WTForms moving the
