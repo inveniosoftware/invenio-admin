@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version 1.3.1 (released 2021-11-24)
+
+- Fix *long* standing issue with newer flask-talisman having changed its interface.
+
 Version 1.3.0 (released 2020-12-17)
 
 - Adds theme dependent icons to the settings menu.
