@@ -9,9 +9,8 @@
 
 """Module tests."""
 
-from __future__ import absolute_import, print_function
-
 import importlib
+from unittest.mock import patch
 
 import flask_admin
 import pkg_resources
@@ -21,7 +20,6 @@ from flask_admin.contrib.sqla import ModelView
 from invenio_access.permissions import Permission
 from invenio_db import db
 from invenio_theme import InvenioTheme
-from mock import patch
 from pkg_resources import EntryPoint
 
 from invenio_admin import InvenioAdmin
@@ -270,13 +268,18 @@ def test_entry_points():
 
 def test_talisman_csp_config_overridden(app):
     """Test that the CSP config of Talisman is set to None."""
-    class Talisman:
-        """Fake Talisman class."""
+    class OldTalisman:
+        """Fake Old Talisman class."""
         def __init__(self):
             from werkzeug.local import Local
             self.local_options = Local()
             setattr(self.local_options, 'content_security_policy',
                     "'default-src': '\'self\'")
+
+    class NewTalisman:
+        """Fake New Talisman class."""
+        def __init__(self):
+            self.content_security_policy = "'default-src': '\'self\'"
 
     class InvenioApp:
         """Fake Invenio App class."""
@@ -284,7 +287,7 @@ def test_talisman_csp_config_overridden(app):
             print('ciao')
             self.talisman = talisman
 
-    app.extensions['invenio-app'] = InvenioApp(Talisman())
+    app.extensions['invenio-app'] = InvenioApp(OldTalisman())
     invenio_app = app.extensions['invenio-app']
     assert invenio_app.talisman.local_options.content_security_policy
 
@@ -294,3 +297,14 @@ def test_talisman_csp_config_overridden(app):
         res = client.get('/admin/')
         assert res.status_code == 200
         assert not invenio_app.talisman.local_options.content_security_policy
+
+    app.extensions['invenio-app'] = InvenioApp(NewTalisman())
+    invenio_app = app.extensions['invenio-app']
+    assert invenio_app.talisman.content_security_policy
+
+    with app.test_client() as client:
+        res = client.get('/login/?user=1')
+        assert res.status_code == 200
+        res = client.get('/admin/')
+        assert res.status_code == 200
+        assert not invenio_app.talisman.content_security_policy
