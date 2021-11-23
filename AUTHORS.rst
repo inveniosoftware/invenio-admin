@@ -11,6 +11,7 @@ Contributors
 - Alexander Ioannidis
 - Alizee Pace
 - Esteban J. G. Gabancho
+- Guillaume Viger
 - Jiri Kuncar
 - Krzysztof Nowak
 - Lars Holm Nielsen
