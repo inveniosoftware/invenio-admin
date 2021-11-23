@@ -98,6 +98,8 @@ def app(request):
         SECRET_KEY='SECRET_KEY',
         ADMIN_LOGIN_ENDPOINT='login',
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        APP_THEME=[],
+        THEME_ICONS=[]
     )
     Babel(app)
     InvenioDB(app)

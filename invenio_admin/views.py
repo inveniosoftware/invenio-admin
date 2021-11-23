@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2021 Northwestern University.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -40,7 +41,7 @@ def init_menu():
     item.register(
         "admin.index",
         # NOTE: Menu item text (icon replaced by a cogs icon).
-        _('%(icon)s Administration', icon=f'<i class="{current_theme_icons.cogs}"></i>'),
+        _('%(icon)s Administration', icon=f'<i class="{current_theme_icons.cogs}"></i>'),  # noqa
         visible_when=_has_admin_access,
         order=100)
 
@@ -75,8 +76,16 @@ def protected_adminview_factory(base_class):
             """
             invenio_app = current_app.extensions.get('invenio-app', None)
             if invenio_app:
-                setattr(invenio_app.talisman.local_options,
-                        'content_security_policy', None)
+                # Because there seems to be back-and-forth on pinning and
+                # unpinning dependencies, let's support both for now:
+                if hasattr(invenio_app.talisman, 'content_security_policy'):
+                    invenio_app.talisman.content_security_policy = None
+                else:
+                    setattr(
+                        invenio_app.talisman.local_options,
+                        'content_security_policy',
+                        None
+                    )
             return super(ProtectedAdminView, self)._handle_view(name, **kwargs)
 
         def is_accessible(self):
