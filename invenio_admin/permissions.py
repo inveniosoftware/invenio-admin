@@ -2,13 +2,14 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2022 RERO.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Permissions for Invenio-Admin."""
 
-import pkg_resources
+import importlib_metadata
 from flask_principal import ActionNeed
 
 action_admin_access = ActionNeed('admin-access')
@@ -27,9 +28,9 @@ def admin_permission_factory(admin_view):
     :returns: Permission instance.
     """
     try:
-        pkg_resources.get_distribution('invenio-access')
+        importlib_metadata.version('invenio-access')
         from invenio_access import Permission
-    except pkg_resources.DistributionNotFound:
+    except importlib_metadata.PackageNotFoundError:
         from flask_principal import Permission
 
     return Permission(action_admin_access)

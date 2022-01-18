@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2022 RERO.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -12,7 +13,7 @@ from __future__ import absolute_import, print_function
 
 import warnings
 
-import pkg_resources
+import importlib_metadata
 from flask_admin import Admin, AdminIndexView
 from invenio_db import db
 from werkzeug.utils import import_string
@@ -55,7 +56,9 @@ class _AdminState(object):
 
         :param str entry_point_group: Name of the entry point group.
         """
-        for ep in pkg_resources.iter_entry_points(group=entry_point_group):
+        for ep in set(importlib_metadata.entry_points(
+            group=entry_point_group
+        )):
             admin_ep = dict(ep.load())
             keys = tuple(
                 k in admin_ep for k in ('model', 'modelview', 'view_class'))
