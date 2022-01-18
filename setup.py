@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2022 RERO.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -22,7 +23,7 @@ tests_require = [
 
 extras_require = {
     'docs': [
-        'Sphinx>=1.4.2',
+        'Sphinx>=4.2.0',
     ],
     'access': [
         'invenio-access>=1.0.0',
@@ -44,8 +45,10 @@ install_requires = [
     'Flask-Menu>=0.5.0',
     'Flask-Principal>=0.4.0',
     'invenio-accounts>=1.2.1',
-    'invenio-base>=1.2.2',
-    'invenio-db>=1.0.0',
+    'invenio-base>=1.2.5',
+    'invenio-db>=1.0.9',
+    'importlib_metadata>=4.4',
+    'invenio-base>=1.2.5',
 ]
 
 packages = find_packages()

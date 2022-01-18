@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2022 RERO.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -13,14 +14,14 @@ import importlib
 from unittest.mock import patch
 
 import flask_admin
-import pkg_resources
+import importlib_metadata
 import pytest
 from flask import Flask
 from flask_admin.contrib.sqla import ModelView
+from importlib_metadata import EntryPoint
 from invenio_access.permissions import Permission
 from invenio_db import db
 from invenio_theme import InvenioTheme
-from pkg_resources import EntryPoint
 
 from invenio_admin import InvenioAdmin
 from invenio_admin.permissions import admin_permission_factory
@@ -80,8 +81,9 @@ def test_base_template_override():
 def test_default_permission(app):
     """Test loading of default permission class."""
     with app.app_context():
-        with patch('pkg_resources.get_distribution') as get_distribution:
-            get_distribution.side_effect = pkg_resources.DistributionNotFound
+        with patch('importlib_metadata.version') as get_distribution:
+            get_distribution.side_effect = \
+                importlib_metadata.PackageNotFoundError
             assert not isinstance(admin_permission_factory(None), Permission)
 
     assert isinstance(admin_permission_factory(None), Permission)
@@ -197,31 +199,42 @@ class MockEntryPoint(EntryPoint):
 
     def load(self):
         """Mock the load of entry point."""
-        mod = importlib.import_module(self.module_name)
+        mod = importlib.import_module(self.module)
         obj = getattr(mod, self.name)
         return obj
 
 
-def _mock_iter_entry_points(group=None):
+def _mock_iter_entry_points():
     """Mock the entry point iterator."""
-    data = {
-        'invenio_admin.views_invalid': [
-            MockEntryPoint('zero', 'demo.onetwo'),
-        ],
-        'invenio_admin.views': [
-            MockEntryPoint('one', 'demo.onetwo'),
-            MockEntryPoint('two', 'demo.onetwo'),
-            MockEntryPoint('three', 'demo.three'),
-            MockEntryPoint('four', 'demo.four'),
-        ]
-    }
-    names = data.keys() if group is None else [group]
-    for key in names:
-        for entry_point in data[key]:
-            yield entry_point
+    def fn(group=None):
+        entry_points = {
+            'invenio_admin.views_invalid': [
+                MockEntryPoint(name='zero', value='demo.onetwo',
+                               group='invenio_admin.views_invalid'),
+            ],
+            'invenio_admin.views': [
+                MockEntryPoint(name='one', value='demo.onetwo',
+                               group='invenio_admin.views'),
+                MockEntryPoint(name='two', value='demo.onetwo',
+                               group='invenio_admin.views'),
+                MockEntryPoint(name='three', value='demo.three',
+                               group='invenio_admin.views'),
+                MockEntryPoint(name='four', value='demo.four',
+                               group='invenio_admin.views'),
+            ]
+        }
+        if group:
+            entry_points_group = []
+            for eps in entry_points.values():
+                for ep in eps:
+                    if ep.group == group:
+                        entry_points_group.append(ep)
+            return entry_points_group
+        return entry_points
+    return fn
 
 
-@patch('pkg_resources.iter_entry_points', _mock_iter_entry_points)
+@patch('importlib_metadata.entry_points', _mock_iter_entry_points())
 def test_invalid_entry_points():
     """Test invalid admin views discovery through entry points."""
     app = Flask('testapp')
@@ -233,7 +246,7 @@ def test_invalid_entry_points():
     assert '"view_class"' in str(e)
 
 
-@patch('pkg_resources.iter_entry_points', _mock_iter_entry_points)
+@patch('importlib_metadata.entry_points', _mock_iter_entry_points())
 def test_entry_points():
     """Test admin views discovery through entry points."""
     from flask_principal import Permission
