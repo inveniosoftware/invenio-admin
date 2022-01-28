@@ -36,7 +36,7 @@ for reqs in extras_require.values():
     extras_require['all'].extend(reqs)
 
 setup_requires = [
-    'Babel>=1.3',
+    'Babel>=2.8',
     'pytest-runner>=2.6.2',
 ]
 
@@ -44,11 +44,10 @@ install_requires = [
     'Flask-Admin>=1.5.6',
     'Flask-Menu>=0.5.0',
     'Flask-Principal>=0.4.0',
+    'importlib_metadata>=4.4',
     'invenio-accounts>=1.2.1',
     'invenio-base>=1.2.5',
     'invenio-db>=1.0.9',
-    'importlib_metadata>=4.4',
-    'invenio-base>=1.2.5',
 ]
 
 packages = find_packages()
