@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version 1.3.2 (released 2022-02-28)
+
+- Replaces pkg_resources with importlib.
+
 Version 1.3.1 (released 2021-11-24)
 
 - Fix *long* standing issue with newer flask-talisman having changed its interface.
