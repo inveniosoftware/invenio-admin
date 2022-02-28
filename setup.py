@@ -18,7 +18,7 @@ history = open('CHANGES.rst').read()
 
 tests_require = [
     'invenio-theme>=1.3.4',
-    'pytest-invenio>=1.4.0',
+    'pytest-invenio>=1.4.3',
 ]
 
 extras_require = {
@@ -44,9 +44,8 @@ install_requires = [
     'Flask-Admin>=1.5.6',
     'Flask-Menu>=0.5.0',
     'Flask-Principal>=0.4.0',
-    'importlib_metadata>=4.4',
     'invenio-accounts>=1.2.1',
-    'invenio-base>=1.2.5',
+    'invenio-base>=1.2.9',
     'invenio-db>=1.0.9',
 ]
 
