@@ -22,13 +22,18 @@ from flask_admin.contrib.sqla import ModelView
 from flask_babelex import Babel
 from flask_login import LoginManager, UserMixin, current_user, login_user
 from flask_menu import Menu
-from flask_principal import Identity, Permission, Principal, UserNeed, \
-    identity_changed, identity_loaded
+from flask_principal import (
+    Identity,
+    Permission,
+    Principal,
+    UserNeed,
+    identity_changed,
+    identity_loaded,
+)
 from invenio_access import InvenioAccess
 from invenio_db import InvenioDB, db
 from sqlalchemy.dialects import mysql
-from sqlalchemy_utils.functions import create_database, database_exists, \
-    drop_database
+from sqlalchemy_utils.functions import create_database, database_exists, drop_database
 from sqlalchemy_utils.types import UUIDType
 
 from invenio_admin import InvenioAdmin
@@ -58,12 +63,12 @@ class TestModelView(ModelView):
 class TestBase(BaseView):
     """Base AdminView."""
 
-    @expose('/')
+    @expose("/")
     def index(self):
         """Index page."""
         return "HelloWorld"
 
-    @expose('/foo/')
+    @expose("/foo/")
     def foo(self):
         """Another page."""
         return "Foobar!"
@@ -92,14 +97,14 @@ def testmodelcls():
 def app(request):
     """Flask application fixture."""
     instance_path = tempfile.mkdtemp()
-    app = Flask('testapp', instance_path=instance_path)
+    app = Flask("testapp", instance_path=instance_path)
     app.config.update(
         TESTING=True,
-        SECRET_KEY='SECRET_KEY',
-        ADMIN_LOGIN_ENDPOINT='login',
+        SECRET_KEY="SECRET_KEY",
+        ADMIN_LOGIN_ENDPOINT="login",
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         APP_THEME=[],
-        THEME_ICONS=[]
+        THEME_ICONS=[],
     )
     Babel(app)
     InvenioDB(app)
@@ -113,15 +118,16 @@ def app(request):
     def load_user(user_id):
         return TestUser.get(user_id)
 
-    @app.route('/login/')
+    @app.route("/login/")
     def login():
         from flask import current_app
         from flask import request as flask_request
-        user = TestUser.get(flask_request.args.get('user', 1))
+
+        user = TestUser.get(flask_request.args.get("user", 1))
         login_user(user)
         identity_changed.send(
-            current_app._get_current_object(),
-            identity=Identity(user.id))
+            current_app._get_current_object(), identity=Identity(user.id)
+        )
         return "Logged In"
 
     @identity_loaded.connect_via(app)
@@ -132,11 +138,9 @@ def app(request):
             identity.provides.add(action_admin_access)
 
     # Register admin view
-    InvenioAdmin(
-        app, permission_factory=lambda x: Permission(action_admin_access))
-    app.extensions['invenio-admin'].register_view(
-        TestModelView, TestModel, db.session)
-    app.extensions['invenio-admin'].register_view(TestBase)
+    InvenioAdmin(app, permission_factory=lambda x: Permission(action_admin_access))
+    app.extensions["invenio-admin"].register_view(TestModelView, TestModel, db.session)
+    app.extensions["invenio-admin"].register_view(TestBase)
     app.register_blueprint(blueprint)
 
     # Create database

@@ -21,29 +21,34 @@ from speaklater import make_lazy_string
 from .proxies import current_admin
 
 blueprint = Blueprint(
-    'invenio_admin',
+    "invenio_admin",
     __name__,
 )
 
 
 def _has_admin_access():
     """Function used to check if a user has any admin access."""
-    return current_user.is_authenticated and \
-        current_admin.permission_factory(
-            current_admin.admin.index_view).can()
+    return (
+        current_user.is_authenticated
+        and current_admin.permission_factory(current_admin.admin.index_view).can()
+    )
 
 
 @blueprint.before_app_first_request
 def init_menu():
     """Initialize menu before first request."""
     # Register settings menu
-    item = current_menu.submenu('settings.admin')
+    item = current_menu.submenu("settings.admin")
     item.register(
         "admin.index",
         # NOTE: Menu item text (icon replaced by a cogs icon).
-        _('%(icon)s Administration', icon=f'<i class="{current_theme_icons.cogs}"></i>'),  # noqa
+        _(
+            "%(icon)s Administration",
+            icon=f'<i class="{current_theme_icons.cogs}"></i>',
+        ),  # noqa
         visible_when=_has_admin_access,
-        order=100)
+        order=100,
+    )
 
 
 def protected_adminview_factory(base_class):
@@ -61,6 +66,7 @@ def protected_adminview_factory(base_class):
     :type base_class: :class:`flask_admin.base.BaseView`
     :returns: Admin view class which provides authentication and authorization.
     """
+
     class ProtectedAdminView(base_class):
         """Admin view class protected by authentication."""
 
@@ -74,25 +80,27 @@ def protected_adminview_factory(base_class):
             Remove this code if and when Flask-Admin will be completely CSP
             compliant.
             """
-            invenio_app = current_app.extensions.get('invenio-app', None)
+            invenio_app = current_app.extensions.get("invenio-app", None)
             if invenio_app:
                 # Because there seems to be back-and-forth on pinning and
                 # unpinning dependencies, let's support both for now:
-                if hasattr(invenio_app.talisman, 'content_security_policy'):
+                if hasattr(invenio_app.talisman, "content_security_policy"):
                     invenio_app.talisman.content_security_policy = None
                 else:
                     setattr(
                         invenio_app.talisman.local_options,
-                        'content_security_policy',
-                        None
+                        "content_security_policy",
+                        None,
                     )
             return super(ProtectedAdminView, self)._handle_view(name, **kwargs)
 
         def is_accessible(self):
             """Require authentication and authorization."""
-            return current_user.is_authenticated and \
-                current_admin.permission_factory(self).can() and \
-                super(ProtectedAdminView, self).is_accessible()
+            return (
+                current_user.is_authenticated
+                and current_admin.permission_factory(self).can()
+                and super(ProtectedAdminView, self).is_accessible()
+            )
 
         def inaccessible_callback(self, name, **kwargs):
             """Redirect to login if user is not logged in.
@@ -102,10 +110,11 @@ def protected_adminview_factory(base_class):
             """
             if not current_user.is_authenticated:
                 # Redirect to login page if user is not logged in.
-                return redirect(url_for(
-                    current_app.config['ADMIN_LOGIN_ENDPOINT'],
-                    next=request.url))
-            super(ProtectedAdminView, self).inaccessible_callback(
-                name, **kwargs)
+                return redirect(
+                    url_for(
+                        current_app.config["ADMIN_LOGIN_ENDPOINT"], next=request.url
+                    )
+                )
+            super(ProtectedAdminView, self).inaccessible_callback(name, **kwargs)
 
     return ProtectedAdminView

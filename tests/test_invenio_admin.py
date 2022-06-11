@@ -31,47 +31,48 @@ from invenio_admin.views import protected_adminview_factory
 def test_version():
     """Test version import."""
     from invenio_admin import __version__
+
     assert __version__
 
 
 def test_init():
     """Test extension initialization."""
-    app = Flask('testapp')
+    app = Flask("testapp")
     ext = InvenioAdmin(app)
-    assert 'invenio-admin' in app.extensions
+    assert "invenio-admin" in app.extensions
 
-    app = Flask('testapp')
+    app = Flask("testapp")
     ext = InvenioAdmin()
-    assert 'invenio-admin' not in app.extensions
+    assert "invenio-admin" not in app.extensions
     ext.init_app(app)
-    assert 'invenio-admin' in app.extensions
+    assert "invenio-admin" in app.extensions
 
 
 def test_invenio_theme_loading_order():
     """Test base template set correctly by invenio_theme."""
-    app = Flask('testapp')
+    app = Flask("testapp")
     InvenioAdmin(app)
-    assert app.config.get('ADMIN_BASE_TEMPLATE') is None
+    assert app.config.get("ADMIN_BASE_TEMPLATE") is None
 
-    app = Flask('testapp')
+    app = Flask("testapp")
     InvenioTheme(app)
     InvenioAdmin(app)
-    assert app.config.get('ADMIN_BASE_TEMPLATE') is not None
+    assert app.config.get("ADMIN_BASE_TEMPLATE") is not None
 
-    app = Flask('testapp')
+    app = Flask("testapp")
     InvenioAdmin(app)
     InvenioTheme(app)
-    assert app.config.get('ADMIN_BASE_TEMPLATE') is not None
+    assert app.config.get("ADMIN_BASE_TEMPLATE") is not None
 
 
 def test_base_template_override():
     """Test base template is set up correctly."""
-    app = Flask('testapp')
-    base_template = 'test_base_template.html'
-    app.config['ADMIN_BASE_TEMPLATE'] = base_template
+    app = Flask("testapp")
+    base_template = "test_base_template.html"
+    app.config["ADMIN_BASE_TEMPLATE"] = base_template
     InvenioTheme(app)
     state = InvenioAdmin(app)
-    assert app.config.get('ADMIN_BASE_TEMPLATE') == base_template
+    assert app.config.get("ADMIN_BASE_TEMPLATE") == base_template
 
     # Force call of before_first_request registered triggers.
     app.try_trigger_before_first_request_functions()
@@ -81,9 +82,8 @@ def test_base_template_override():
 def test_default_permission(app):
     """Test loading of default permission class."""
     with app.app_context():
-        with patch('importlib_metadata.version') as get_distribution:
-            get_distribution.side_effect = \
-                importlib_metadata.PackageNotFoundError
+        with patch("importlib_metadata.version") as get_distribution:
+            get_distribution.side_effect = importlib_metadata.PackageNotFoundError
             assert not isinstance(admin_permission_factory(None), Permission)
 
     assert isinstance(admin_permission_factory(None), Permission)
@@ -101,38 +101,38 @@ def test_admin_view_authenticated(app):
         # Model view
         res = client.get("/admin/testmodel/", follow_redirects=False)
         assert res.status_code == 302
-        assert res.location.startswith('http://localhost/login')
+        assert res.location.startswith("http://localhost/login")
 
         # Base view
-        res = client.get('/admin/testbase/')
+        res = client.get("/admin/testbase/")
         assert res.status_code == 302
-        assert res.location.startswith('http://localhost/login')
-        res = client.get('/admin/testbase/foo/')
+        assert res.location.startswith("http://localhost/login")
+        res = client.get("/admin/testbase/foo/")
         assert res.status_code == 302
-        assert res.location.startswith('http://localhost/login')
+        assert res.location.startswith("http://localhost/login")
 
     # User 1 can access admin because it has ActioNeed(admin-access)
     with app.test_client() as client:
-        res = client.get('/login/?user=1')
+        res = client.get("/login/?user=1")
         assert res.status_code == 200
         # Admin panel
-        res = client.get('/admin/')
+        res = client.get("/admin/")
         assert res.status_code == 200
 
         # Model view
-        res = client.get('/admin/testmodel/')
+        res = client.get("/admin/testmodel/")
         assert res.status_code == 200
 
         # Base view
-        res = client.get('/admin/testbase/')
+        res = client.get("/admin/testbase/")
         assert res.status_code == 200
-        res = client.get('/admin/testbase/foo/')
+        res = client.get("/admin/testbase/foo/")
         assert res.status_code == 200
 
     # User 2 is missing ActioNeed(admin-access) and thus can't access admin.
     # 403 error returned.
     with app.test_client() as client:
-        res = client.get('/login/?user=2')
+        res = client.get("/login/?user=2")
         # Admin panel
         res = client.get("/admin/")
         assert res.status_code == 403
@@ -142,55 +142,58 @@ def test_admin_view_authenticated(app):
         assert res.status_code == 403
 
         # Base view
-        res = client.get('/admin/testbase/')
+        res = client.get("/admin/testbase/")
         assert res.status_code == 403
-        res = client.get('/admin/testbase/foo/')
+        res = client.get("/admin/testbase/foo/")
         assert res.status_code == 403
 
 
 def test_menu_visiblity(app):
     """Test menu visiblity."""
-    @app.route('/menu/')
+
+    @app.route("/menu/")
     def render_menu():
-        settings_menu = app.extensions['menu'].submenu('settings')
-        return ';'.join([i.url for i in settings_menu.children if i.visible])
+        settings_menu = app.extensions["menu"].submenu("settings")
+        return ";".join([i.url for i in settings_menu.children if i.visible])
 
     with app.test_client() as client:
-        res = client.get('/menu/')
-        assert '/admin/' not in res.get_data(as_text=True)
-        res = client.get('/login/?user=1')
+        res = client.get("/menu/")
+        assert "/admin/" not in res.get_data(as_text=True)
+        res = client.get("/login/?user=1")
         assert res.status_code == 200
-        res = client.get('/menu/')
-        assert '/admin/' in res.get_data(as_text=True)
+        res = client.get("/menu/")
+        assert "/admin/" in res.get_data(as_text=True)
 
 
 def test_custom_permissions(app, testmodelcls):
     """Test custom permissions."""
+
     class CustomModel(testmodelcls):
         """Some custom model."""
+
         pass
 
     class CustomView(ModelView):
         """Some custom model."""
+
         @staticmethod
         def is_accessible():
             """Check if accessible."""
             return False
 
     protected_view = protected_adminview_factory(CustomView)
-    app.extensions['admin'][0].add_view(
-        protected_view(CustomModel, db.session))
+    app.extensions["admin"][0].add_view(protected_view(CustomModel, db.session))
 
     with app.test_client() as client:
-        res = client.get('/login/?user=1')
+        res = client.get("/login/?user=1")
         assert res.status_code == 200
-        res = client.get('/admin/')
+        res = client.get("/admin/")
         assert res.status_code == 200
-        res = client.get('/admin/testmodel/')
+        res = client.get("/admin/testmodel/")
         assert res.status_code == 200
-        res = client.get('/admin/testbase/')
+        res = client.get("/admin/testbase/")
         assert res.status_code == 200
-        res = client.get('/admin/custommodel/')
+        res = client.get("/admin/custommodel/")
         assert res.status_code == 403
 
 
@@ -206,22 +209,30 @@ class MockEntryPoint(EntryPoint):
 
 def _mock_iter_entry_points():
     """Mock the entry point iterator."""
+
     def fn(group=None):
         entry_points = {
-            'invenio_admin.views_invalid': [
-                MockEntryPoint(name='zero', value='demo.onetwo',
-                               group='invenio_admin.views_invalid'),
+            "invenio_admin.views_invalid": [
+                MockEntryPoint(
+                    name="zero",
+                    value="demo.onetwo",
+                    group="invenio_admin.views_invalid",
+                ),
             ],
-            'invenio_admin.views': [
-                MockEntryPoint(name='one', value='demo.onetwo',
-                               group='invenio_admin.views'),
-                MockEntryPoint(name='two', value='demo.onetwo',
-                               group='invenio_admin.views'),
-                MockEntryPoint(name='three', value='demo.three',
-                               group='invenio_admin.views'),
-                MockEntryPoint(name='four', value='demo.four',
-                               group='invenio_admin.views'),
-            ]
+            "invenio_admin.views": [
+                MockEntryPoint(
+                    name="one", value="demo.onetwo", group="invenio_admin.views"
+                ),
+                MockEntryPoint(
+                    name="two", value="demo.onetwo", group="invenio_admin.views"
+                ),
+                MockEntryPoint(
+                    name="three", value="demo.three", group="invenio_admin.views"
+                ),
+                MockEntryPoint(
+                    name="four", value="demo.four", group="invenio_admin.views"
+                ),
+            ],
         }
         if group:
             entry_points_group = []
@@ -231,93 +242,99 @@ def _mock_iter_entry_points():
                         entry_points_group.append(ep)
             return entry_points_group
         return entry_points
+
     return fn
 
 
-@patch('importlib_metadata.entry_points', _mock_iter_entry_points())
+@patch("importlib_metadata.entry_points", _mock_iter_entry_points())
 def test_invalid_entry_points():
     """Test invalid admin views discovery through entry points."""
-    app = Flask('testapp')
+    app = Flask("testapp")
     admin_app = InvenioAdmin()
     with pytest.raises(Exception) as e:
-        admin_app.init_app(
-            app, entry_point_group='invenio_admin.views_invalid'
-        )
+        admin_app.init_app(app, entry_point_group="invenio_admin.views_invalid")
     assert '"view_class"' in str(e)
 
 
-@patch('importlib_metadata.entry_points', _mock_iter_entry_points())
+@patch("importlib_metadata.entry_points", _mock_iter_entry_points())
 def test_entry_points():
     """Test admin views discovery through entry points."""
     from flask_principal import Permission
-    app = Flask('testapp')
+
+    app = Flask("testapp")
     admin_app = InvenioAdmin(
-        app,
-        permission_factory=lambda x: Permission(),
-        view_class_factory=lambda x: x)
+        app, permission_factory=lambda x: Permission(), view_class_factory=lambda x: x
+    )
     # Check if model views were added by checking the labels of menu items
     menu_items = {str(item.name): item for item in admin_app.admin.menu()}
-    assert 'OneAndTwo' in menu_items  # Category for ModelOne and ModelTwo
-    assert 'Four' in menu_items  # Category for ModelOne and ModelTwo
-    assert 'Model One' not in menu_items  # ModelOne should go to a category
-    assert 'Model Two' not in menu_items  # ModelTwo should go to a category
-    assert 'Model Three' in menu_items  # ModelThree goes straight to menu
-    assert isinstance(menu_items['Model Three'], flask_admin.menu.MenuView)
-    assert isinstance(menu_items['OneAndTwo'], flask_admin.menu.MenuCategory)
-    assert menu_items['OneAndTwo'].is_category()
-    assert not menu_items['Model Three'].is_category()
-    submenu_items = {str(item.name): item for item in
-                     menu_items['OneAndTwo'].get_children()}
-    assert 'Model One' in submenu_items
-    assert 'Model Two' in submenu_items
-    assert not submenu_items['Model One'].is_category()
-    assert not submenu_items['Model Two'].is_category()
-    assert isinstance(submenu_items['Model One'], flask_admin.menu.MenuView)
-    assert isinstance(submenu_items['Model Two'], flask_admin.menu.MenuView)
-    four_item = menu_items['Four'].get_children()[0]
-    assert four_item.name == 'View number Four'
+    assert "OneAndTwo" in menu_items  # Category for ModelOne and ModelTwo
+    assert "Four" in menu_items  # Category for ModelOne and ModelTwo
+    assert "Model One" not in menu_items  # ModelOne should go to a category
+    assert "Model Two" not in menu_items  # ModelTwo should go to a category
+    assert "Model Three" in menu_items  # ModelThree goes straight to menu
+    assert isinstance(menu_items["Model Three"], flask_admin.menu.MenuView)
+    assert isinstance(menu_items["OneAndTwo"], flask_admin.menu.MenuCategory)
+    assert menu_items["OneAndTwo"].is_category()
+    assert not menu_items["Model Three"].is_category()
+    submenu_items = {
+        str(item.name): item for item in menu_items["OneAndTwo"].get_children()
+    }
+    assert "Model One" in submenu_items
+    assert "Model Two" in submenu_items
+    assert not submenu_items["Model One"].is_category()
+    assert not submenu_items["Model Two"].is_category()
+    assert isinstance(submenu_items["Model One"], flask_admin.menu.MenuView)
+    assert isinstance(submenu_items["Model Two"], flask_admin.menu.MenuView)
+    four_item = menu_items["Four"].get_children()[0]
+    assert four_item.name == "View number Four"
     assert isinstance(four_item, flask_admin.menu.MenuView)
 
 
 def test_talisman_csp_config_overridden(app):
     """Test that the CSP config of Talisman is set to None."""
+
     class OldTalisman:
         """Fake Old Talisman class."""
+
         def __init__(self):
             from werkzeug.local import Local
+
             self.local_options = Local()
-            setattr(self.local_options, 'content_security_policy',
-                    "'default-src': '\'self\'")
+            setattr(
+                self.local_options, "content_security_policy", "'default-src': ''self'"
+            )
 
     class NewTalisman:
         """Fake New Talisman class."""
+
         def __init__(self):
-            self.content_security_policy = "'default-src': '\'self\'"
+            self.content_security_policy = "'default-src': ''self'"
 
     class InvenioApp:
         """Fake Invenio App class."""
+
         def __init__(self, talisman):
-            print('ciao')
+            print("ciao")
             self.talisman = talisman
 
-    app.extensions['invenio-app'] = InvenioApp(OldTalisman())
-    invenio_app = app.extensions['invenio-app']
+    app.extensions["invenio-app"] = InvenioApp(OldTalisman())
+    invenio_app = app.extensions["invenio-app"]
     assert invenio_app.talisman.local_options.content_security_policy
 
     with app.test_client() as client:
-        res = client.get('/login/?user=1')
+        res = client.get("/login/?user=1")
         assert res.status_code == 200
-        res = client.get('/admin/')
+        res = client.get("/admin/")
         assert res.status_code == 200
         assert not invenio_app.talisman.local_options.content_security_policy
 
-    app.extensions['invenio-app'] = InvenioApp(NewTalisman())
-    invenio_app = app.extensions['invenio-app']
+    app.extensions["invenio-app"] = InvenioApp(NewTalisman())
+    invenio_app = app.extensions["invenio-app"]
     assert invenio_app.talisman.content_security_policy
 
     with app.test_client() as client:
-        res = client.get('/login/?user=1')
+        res = client.get("/login/?user=1")
         assert res.status_code == 200
-        res = client.get('/admin/')
+        res = client.get("/admin/")
         assert res.status_code == 200
         assert not invenio_app.talisman.content_security_policy

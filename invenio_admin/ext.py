@@ -47,8 +47,8 @@ class _AdminState(object):
         :param kwargs: Keyword arguments to view class.
         """
         protected_view_class = self.view_class_factory(view_class)
-        if 'endpoint' not in kwargs:
-            kwargs['endpoint'] = view_class(*args, **kwargs).endpoint
+        if "endpoint" not in kwargs:
+            kwargs["endpoint"] = view_class(*args, **kwargs).endpoint
         self.admin.add_view(protected_view_class(*args, **kwargs))
 
     def load_entry_point_group(self, entry_point_group):
@@ -56,35 +56,33 @@ class _AdminState(object):
 
         :param str entry_point_group: Name of the entry point group.
         """
-        for ep in set(importlib_metadata.entry_points(
-            group=entry_point_group
-        )):
+        for ep in set(importlib_metadata.entry_points(group=entry_point_group)):
             admin_ep = dict(ep.load())
-            keys = tuple(
-                k in admin_ep for k in ('model', 'modelview', 'view_class'))
+            keys = tuple(k in admin_ep for k in ("model", "modelview", "view_class"))
 
             if keys == (False, False, True):
                 self.register_view(
-                    admin_ep.pop('view_class'),
-                    *admin_ep.pop('args', []),
-                    **admin_ep.pop('kwargs', {})
+                    admin_ep.pop("view_class"),
+                    *admin_ep.pop("args", []),
+                    **admin_ep.pop("kwargs", {})
                 )
             elif keys == (True, True, False):
                 warnings.warn(
-                    'Usage of model and modelview kwargs are deprecated in '
-                    'favor of view_class, args and kwargs.',
-                    PendingDeprecationWarning
+                    "Usage of model and modelview kwargs are deprecated in "
+                    "favor of view_class, args and kwargs.",
+                    PendingDeprecationWarning,
                 )
                 self.register_view(
-                    admin_ep.pop('modelview'),
-                    admin_ep.pop('model'),
-                    admin_ep.pop('session', db.session),
+                    admin_ep.pop("modelview"),
+                    admin_ep.pop("model"),
+                    admin_ep.pop("session", db.session),
                     **admin_ep
                 )
             else:
                 raise Exception(
-                    'Admin entry point dictionary must contain '
-                    'either "view_class" OR "model" and "modelview" keys.')
+                    "Admin entry point dictionary must contain "
+                    'either "view_class" OR "model" and "modelview" keys.'
+                )
 
 
 class InvenioAdmin(object):
@@ -99,12 +97,14 @@ class InvenioAdmin(object):
         if app:
             self._state = self.init_app(app, **kwargs)
 
-    def init_app(self,
-                 app,
-                 entry_point_group='invenio_admin.views',
-                 permission_factory=None,
-                 view_class_factory=protected_adminview_factory,
-                 index_view_class=AdminIndexView):
+    def init_app(
+        self,
+        app,
+        entry_point_group="invenio_admin.views",
+        permission_factory=None,
+        view_class_factory=protected_adminview_factory,
+        index_view_class=AdminIndexView,
+    ):
         """Flask application initialization.
 
         :param app: The Flask application.
@@ -124,23 +124,24 @@ class InvenioAdmin(object):
         """
         self.init_config(app)
 
-        default_permission_factory = app.config['ADMIN_PERMISSION_FACTORY']
-        permission_factory = permission_factory or \
-            import_string(default_permission_factory)
+        default_permission_factory = app.config["ADMIN_PERMISSION_FACTORY"]
+        permission_factory = permission_factory or import_string(
+            default_permission_factory
+        )
 
         # Create administration app.
 
         admin = Admin(
             app,
-            name=app.config['ADMIN_APPNAME'],
-            template_mode=app.config['ADMIN_TEMPLATE_MODE'],
+            name=app.config["ADMIN_APPNAME"],
+            template_mode=app.config["ADMIN_TEMPLATE_MODE"],
             index_view=view_class_factory(index_view_class)(),
         )
 
         @app.before_first_request
         def lazy_base_template():
             """Initialize admin base template lazily."""
-            base_template = app.config.get('ADMIN_BASE_TEMPLATE')
+            base_template = app.config.get("ADMIN_BASE_TEMPLATE")
             if base_template:
                 admin.base_template = base_template
 
@@ -149,7 +150,7 @@ class InvenioAdmin(object):
         if entry_point_group:
             state.load_entry_point_group(entry_point_group)
 
-        app.extensions['invenio-admin'] = state
+        app.extensions["invenio-admin"] = state
         return state
 
     @staticmethod
@@ -160,9 +161,9 @@ class InvenioAdmin(object):
         """
         # Set default configuration
         for k in dir(config):
-            if k == 'ADMIN_BASE_TEMPLATE' and getattr(config, k) is None:
+            if k == "ADMIN_BASE_TEMPLATE" and getattr(config, k) is None:
                 continue
-            if k.startswith('ADMIN_'):
+            if k.startswith("ADMIN_"):
                 app.config.setdefault(k, getattr(config, k))
 
     def __getattr__(self, name):

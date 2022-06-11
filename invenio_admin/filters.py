@@ -37,14 +37,14 @@ class UUIDEqualFilter(filters.FilterEqual):
 class FilterConverter(filters.FilterConverter):
     """Filter converter for dealing with UUIDs and variants."""
 
-    uuid_filters = (UUIDEqualFilter, )
+    uuid_filters = (UUIDEqualFilter,)
 
-    @convert('uuidtype')
+    @convert("uuidtype")
     def conv_uuid(self, column, name, **kwargs):
         """Convert UUID filter."""
         return [f(column, name, **kwargs) for f in self.uuid_filters]
 
-    @convert('variant')
+    @convert("variant")
     def conv_variant(self, column, name, **kwargs):
         """Convert variants."""
         return self.convert(str(column.type), column, name, **kwargs)

@@ -14,7 +14,7 @@ from flask_admin.base import BaseView, expose
 class Four(BaseView):
     """AdminModelView of the ModelOne."""
 
-    @expose('/')
+    @expose("/")
     def index(self):
         """Index page."""
         return "Content of custom page Four"
@@ -23,9 +23,10 @@ class Four(BaseView):
 four = dict(
     view_class=Four,
     kwargs=dict(
-        category='Four',
-        name='View number Four',
-        endpoint='four',
-        menu_icon_type='glyph',
-        menu_icon_value='glyphicon-home')
-    )
+        category="Four",
+        name="View number Four",
+        endpoint="four",
+        menu_icon_type="glyph",
+        menu_icon_value="glyphicon-home",
+    ),
+)

@@ -18,7 +18,7 @@ from invenio_admin.filters import FilterConverter, UUIDEqualFilter
 def test_uuid_filter(app, testmodelcls):
     """Test UUID."""
     with app.app_context():
-        f = UUIDEqualFilter(testmodelcls.uuidcol, 'uuidcol')
+        f = UUIDEqualFilter(testmodelcls.uuidcol, "uuidcol")
         q = testmodelcls.query
         assert q.whereclause is None
 
@@ -35,7 +35,7 @@ def test_uuid_filter(app, testmodelcls):
 def test_filter_converter_uuid(testmodelcls):
     """Test filter converter."""
     c = FilterConverter()
-    f = c.convert('uuidtype', testmodelcls.uuidcol, 'uuidcol')
+    f = c.convert("uuidtype", testmodelcls.uuidcol, "uuidcol")
     assert len(f) == 1
     assert isinstance(f[0], UUIDEqualFilter)
 
@@ -43,5 +43,5 @@ def test_filter_converter_uuid(testmodelcls):
 def test_filter_converter_variant(testmodelcls):
     """Test filter converter."""
     c = FilterConverter()
-    f = c.convert('variant', testmodelcls.dt, 'dt')
+    f = c.convert("variant", testmodelcls.dt, "dt")
     assert len(f) == 7

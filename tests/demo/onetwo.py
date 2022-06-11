@@ -42,14 +42,10 @@ class ModelTwoModelView(ModelView):
 zero = {}
 
 # Old deprecated way of specifying admin entry points:
-one = dict(
-    modelview=ModelOneModelView,
-    model=ModelOne,
-    category='OneAndTwo'
-)
+one = dict(modelview=ModelOneModelView, model=ModelOne, category="OneAndTwo")
 # New way of specifying admin entry points:
 two = dict(
     view_class=ModelTwoModelView,
     args=[ModelTwo, db.session],
-    kwargs=dict(category='OneAndTwo')
- )
+    kwargs=dict(category="OneAndTwo"),
+)

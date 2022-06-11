@@ -12,18 +12,18 @@ ADMIN_BASE_TEMPLATE = None
 """Admin panel base template.
 By default (``None``) uses the Flask-Admin template."""
 
-ADMIN_APPNAME = 'Invenio'
+ADMIN_APPNAME = "Invenio"
 """Name of the Flask-Admin app (also the page title of admin panel)."""
 
-ADMIN_LOGIN_ENDPOINT = 'security.login'
+ADMIN_LOGIN_ENDPOINT = "security.login"
 """Endpoint name of the login view. Anonymous users trying to access admin
 panel will be redirected to this endpoint."""
 
-ADMIN_LOGOUT_ENDPOINT = 'security.logout'
+ADMIN_LOGOUT_ENDPOINT = "security.logout"
 """Endpoint name of logout view."""
 
-ADMIN_TEMPLATE_MODE = 'bootstrap3'
+ADMIN_TEMPLATE_MODE = "bootstrap3"
 """Flask-Admin template mode. Either ``bootstrap2`` or ``bootstrap3``."""
 
-ADMIN_PERMISSION_FACTORY = 'invenio_admin.permissions.admin_permission_factory'
+ADMIN_PERMISSION_FACTORY = "invenio_admin.permissions.admin_permission_factory"
 """Permission factory for the admin views."""

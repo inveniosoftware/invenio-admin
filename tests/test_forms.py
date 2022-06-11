@@ -18,10 +18,10 @@ def test_lazy_choices():
     called = dict(val=False)
 
     def _choices():
-        called['val'] = True
+        called["val"] = True
         return [1, 2]
 
     choices = LazyChoices(_choices)
-    assert not called['val']
+    assert not called["val"]
     assert list(choices) == [1, 2]
-    assert called['val']
+    assert called["val"]
