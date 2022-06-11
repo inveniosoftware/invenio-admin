@@ -145,6 +145,8 @@ separate base view for statistics page. The content of the file is as follows:
         'kwargs': {'name': 'Invenio Diner Stats'},
     }
 
+__version__ = '1.3.2'
+
     __all__ = (
         'snack_adminview',
         'breakfast_adminview',
@@ -260,6 +262,7 @@ from __future__ import absolute_import, print_function
 
 from .ext import InvenioAdmin
 from .proxies import current_admin
-from .version import __version__
+
+__version__ = '1.3.2'
 
 __all__ = ('__version__', 'InvenioAdmin', 'current_admin')
