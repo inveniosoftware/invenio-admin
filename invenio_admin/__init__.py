@@ -145,7 +145,7 @@ separate base view for statistics page. The content of the file is as follows:
         'kwargs': {'name': 'Invenio Diner Stats'},
     }
 
-__version__ = '1.3.2'
+    __version__ = '1.3.2'
 
     __all__ = (
         'snack_adminview',
