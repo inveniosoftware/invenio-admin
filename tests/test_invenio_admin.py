@@ -101,15 +101,15 @@ def test_admin_view_authenticated(app):
         # Model view
         res = client.get("/admin/testmodel/", follow_redirects=False)
         assert res.status_code == 302
-        assert res.location.startswith("http://localhost/login")
+        assert res.location.startswith("/login")
 
         # Base view
         res = client.get("/admin/testbase/")
         assert res.status_code == 302
-        assert res.location.startswith("http://localhost/login")
+        assert res.location.startswith("/login")
         res = client.get("/admin/testbase/foo/")
         assert res.status_code == 302
-        assert res.location.startswith("http://localhost/login")
+        assert res.location.startswith("/login")
 
     # User 1 can access admin because it has ActioNeed(admin-access)
     with app.test_client() as client:
