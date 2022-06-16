@@ -21,6 +21,7 @@ First, let us create a new Flask application:
 
 >>> from flask import Flask
 >>> app = Flask('DinerApp')
+>>> app.config.update(DB_VERSIONING=False,)
 
 and load the Invenio-DB and Invenio-Admin extensions:
 

@@ -105,6 +105,7 @@ def app(request):
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         APP_THEME=[],
         THEME_ICONS=[],
+        DB_VERSIONING=False,
     )
     Babel(app)
     InvenioDB(app)
