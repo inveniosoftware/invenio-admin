@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2023 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -19,7 +20,6 @@ import pytest
 from flask import Flask
 from flask_admin.base import BaseView, expose
 from flask_admin.contrib.sqla import ModelView
-from flask_babelex import Babel
 from flask_login import LoginManager, UserMixin, current_user, login_user
 from flask_menu import Menu
 from flask_principal import (
@@ -32,6 +32,7 @@ from flask_principal import (
 )
 from invenio_access import InvenioAccess
 from invenio_db import InvenioDB, db
+from invenio_i18n import Babel
 from sqlalchemy.dialects import mysql
 from sqlalchemy_utils.functions import create_database, database_exists, drop_database
 from sqlalchemy_utils.types import UUIDType
