@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version 1.4.0 (released 2023-03-02)
+
+- remove deprecated flask_babelex imports
+- install invenio_i18n as explicit dependency
+
 Version 1.3.2 (released 2022-02-28)
 
 - Replaces pkg_resources with importlib.
