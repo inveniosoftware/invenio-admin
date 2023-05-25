@@ -2,7 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -38,6 +38,7 @@ from sqlalchemy_utils.functions import create_database, database_exists, drop_da
 from sqlalchemy_utils.types import UUIDType
 
 from invenio_admin import InvenioAdmin
+from invenio_admin.ext import finalize_app
 from invenio_admin.permissions import action_admin_access
 from invenio_admin.views import blueprint
 
@@ -144,6 +145,9 @@ def app(request):
     app.extensions["invenio-admin"].register_view(TestModelView, TestModel, db.session)
     app.extensions["invenio-admin"].register_view(TestBase)
     app.register_blueprint(blueprint)
+
+    with app.app_context():
+        finalize_app(app)
 
     # Create database
     with app.app_context():
