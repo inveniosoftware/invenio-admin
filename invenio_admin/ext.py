@@ -3,7 +3,7 @@
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
 # Copyright (C) 2022 RERO.
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -17,6 +17,7 @@ import warnings
 import importlib_metadata
 from flask_admin import Admin, AdminIndexView
 from flask_login import current_user
+from flask_menu import current_menu
 from invenio_db import db
 from invenio_i18n import lazy_gettext as _
 from invenio_theme.proxies import current_theme_icons
@@ -189,8 +190,7 @@ def lazy_base_template(app):
 def init_menu(app):
     """Initialize menu before first request."""
     # Register settings menu
-    menu = app.extensions["menu"]
-    menu.submenu("settings.admin").register(
+    current_menu.submenu("settings.admin").register(
         "admin.index",
         # NOTE: Menu item text (icon replaced by a cogs icon).
         _(
