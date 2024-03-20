@@ -3,6 +3,7 @@
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
 # Copyright (C) 2022 RERO.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -15,10 +16,15 @@ import warnings
 
 import importlib_metadata
 from flask_admin import Admin, AdminIndexView
+from flask_login import current_user
+from flask_menu import current_menu
 from invenio_db import db
+from invenio_i18n import lazy_gettext as _
+from invenio_theme.proxies import current_theme_icons
 from werkzeug.utils import import_string
 
 from . import config
+from .proxies import current_admin
 from .views import protected_adminview_factory
 
 
@@ -64,7 +70,7 @@ class _AdminState(object):
                 self.register_view(
                     admin_ep.pop("view_class"),
                     *admin_ep.pop("args", []),
-                    **admin_ep.pop("kwargs", {})
+                    **admin_ep.pop("kwargs", {}),
                 )
             elif keys == (True, True, False):
                 warnings.warn(
@@ -76,7 +82,7 @@ class _AdminState(object):
                     admin_ep.pop("modelview"),
                     admin_ep.pop("model"),
                     admin_ep.pop("session", db.session),
-                    **admin_ep
+                    **admin_ep,
                 )
             else:
                 raise Exception(
@@ -138,13 +144,6 @@ class InvenioAdmin(object):
             index_view=view_class_factory(index_view_class)(),
         )
 
-        @app.before_first_request
-        def lazy_base_template():
-            """Initialize admin base template lazily."""
-            base_template = app.config.get("ADMIN_BASE_TEMPLATE")
-            if base_template:
-                admin.base_template = base_template
-
         # Create admin state
         state = _AdminState(app, admin, permission_factory, view_class_factory)
         if entry_point_group:
@@ -172,3 +171,40 @@ class InvenioAdmin(object):
         :param name: Attribute name of the state.
         """
         return getattr(self._state, name, None)
+
+
+def finalize_app(app):
+    """Finalize app."""
+    lazy_base_template(app)
+    init_menu(app)
+
+
+def lazy_base_template(app):
+    """Initialize admin base template lazily."""
+    base_template = app.config.get("ADMIN_BASE_TEMPLATE")
+    invenio_admin = app.extensions["invenio-admin"]
+    if base_template:
+        invenio_admin.admin.base_template = base_template
+
+
+def init_menu(app):
+    """Initialize menu before first request."""
+    # Register settings menu
+    current_menu.submenu("settings.admin").register(
+        "admin.index",
+        # NOTE: Menu item text (icon replaced by a cogs icon).
+        _(
+            "%(icon)s Administration",
+            icon=f'<i class="{current_theme_icons.cogs}"></i>',
+        ),  # noqa
+        visible_when=_has_admin_access,
+        order=100,
+    )
+
+
+def _has_admin_access():
+    """Function used to check if a user has any admin access."""
+    return (
+        current_user.is_authenticated
+        and current_admin.permission_factory(current_admin.admin.index_view).can()
+    )

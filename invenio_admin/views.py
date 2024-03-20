@@ -14,9 +14,6 @@ from __future__ import absolute_import, print_function
 
 from flask import Blueprint, current_app, redirect, request, url_for
 from flask_login import current_user
-from flask_menu import current_menu
-from invenio_i18n import lazy_gettext as _
-from invenio_theme.proxies import current_theme_icons
 
 from .proxies import current_admin
 
@@ -24,31 +21,6 @@ blueprint = Blueprint(
     "invenio_admin",
     __name__,
 )
-
-
-def _has_admin_access():
-    """Function used to check if a user has any admin access."""
-    return (
-        current_user.is_authenticated
-        and current_admin.permission_factory(current_admin.admin.index_view).can()
-    )
-
-
-@blueprint.before_app_first_request
-def init_menu():
-    """Initialize menu before first request."""
-    # Register settings menu
-    item = current_menu.submenu("settings.admin")
-    item.register(
-        "admin.index",
-        # NOTE: Menu item text (icon replaced by a cogs icon).
-        _(
-            "%(icon)s Administration",
-            icon=f'<i class="{current_theme_icons.cogs}"></i>',
-        ),  # noqa
-        visible_when=_has_admin_access,
-        order=100,
-    )
 
 
 def protected_adminview_factory(base_class):
