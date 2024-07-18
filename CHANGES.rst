@@ -8,6 +8,12 @@
 Changes
 =======
 
+Version 1.5.0 (released 2024-07-18)
+
+- setup: add invenio-app dependency
+- fix: before_app_first_request deprecation
+- i18n-global: add compile-catalog fuzzy (#104)
+
 Version 1.4.0 (released 2023-03-02)
 
 - remove deprecated flask_babelex imports
