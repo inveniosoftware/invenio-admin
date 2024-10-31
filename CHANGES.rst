@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version v1.5.1 (released 2024-10-31)
+
+- setup: pin wtforms
+
 Version 1.5.0 (released 2024-07-18)
 
 - setup: add invenio-app dependency
