@@ -18,6 +18,7 @@ import importlib_metadata
 import pytest
 from flask import Flask
 from flask_admin.contrib.sqla import ModelView
+from flask_menu import current_menu
 from importlib_metadata import EntryPoint
 from invenio_access.permissions import Permission
 from invenio_db import db
@@ -157,7 +158,7 @@ def test_menu_visiblity(app):
 
     @app.route("/menu/")
     def render_menu():
-        settings_menu = app.extensions["menu"].submenu("settings")
+        settings_menu = current_menu.submenu("settings")
         return ";".join([i.url for i in settings_menu.children if i.visible])
 
     with app.test_client() as client:
