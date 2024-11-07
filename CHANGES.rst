@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version v1.4.1 (released 2024-11-07)
+
+- setup: pin wtforms
+    3.2.0 makes a breaking change https://wtforms.readthedocs.io/en/3.2.x/changes/
+
 Version 1.4.0 (released 2023-03-02)
 
 - remove deprecated flask_babelex imports
