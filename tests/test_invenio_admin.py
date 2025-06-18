@@ -26,6 +26,7 @@ from invenio_db import db
 from invenio_theme import InvenioTheme
 
 from invenio_admin import InvenioAdmin
+from invenio_admin.ext import finalize_app
 from invenio_admin.permissions import admin_permission_factory
 from invenio_admin.views import protected_adminview_factory
 
@@ -209,8 +210,7 @@ class MockEntryPoint(EntryPoint):
     def load(self):
         """Mock the load of entry point."""
         mod = importlib.import_module(self.module)
-        obj = getattr(mod, self.name)
-        return obj
+        return getattr(mod, self.name)
 
 
 def _mock_iter_entry_points():
@@ -257,8 +257,9 @@ def test_invalid_entry_points():
     """Test invalid admin views discovery through entry points."""
     app = Flask("testapp")
     admin_app = InvenioAdmin()
+    admin_app.init_app(app, entry_point_group="invenio_admin.views_invalid")
     with pytest.raises(Exception) as e:
-        admin_app.init_app(app, entry_point_group="invenio_admin.views_invalid")
+        finalize_app(app)
     assert '"view_class"' in str(e)
 
 
@@ -269,8 +270,11 @@ def test_entry_points():
 
     app = Flask("testapp")
     admin_app = InvenioAdmin(
-        app, permission_factory=lambda x: Permission(), view_class_factory=lambda x: x
+        app,
+        permission_factory=lambda x: Permission(),
+        view_class_factory=lambda x: x,
     )
+    admin_app.load_entry_point_group(entry_point_group="invenio_admin.views")
     # Check if model views were added by checking the labels of menu items
     menu_items = {str(item.name): item for item in admin_app.admin.menu()}
     assert "OneAndTwo" in menu_items  # Category for ModelOne and ModelTwo

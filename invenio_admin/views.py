@@ -52,8 +52,7 @@ def protected_adminview_factory(base_class):
             Remove this code if and when Flask-Admin will be completely CSP
             compliant.
             """
-            invenio_app = current_app.extensions.get("invenio-app", None)
-            if invenio_app:
+            if invenio_app := current_app.extensions.get("invenio-app", None):
                 # Because there seems to be back-and-forth on pinning and
                 # unpinning dependencies, let's support both for now:
                 if hasattr(invenio_app.talisman, "content_security_policy"):
