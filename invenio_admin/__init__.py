@@ -19,16 +19,16 @@ This section presents a minimal working example of the Invenio-Admin.
 
 First, let us create a new Flask application:
 
->>> from flask import Flask
->>> app = Flask('DinerApp')
->>> app.config.update(DB_VERSIONING=False,)
+### from flask import Flask
+### app = Flask('DinerApp')
+### app.config.update(DB_VERSIONING=False,)
 
 and load the Invenio-DB and Invenio-Admin extensions:
 
->>> from invenio_db import InvenioDB
->>> from invenio_admin import InvenioAdmin
->>> ext_db = InvenioDB(app)
->>> ext_admin = InvenioAdmin(app, view_class_factory=lambda x: x)
+### from invenio_db import InvenioDB
+### from invenio_admin import InvenioAdmin
+### ext_db = InvenioDB(app)
+### ext_admin = InvenioAdmin(app, view_class_factory=lambda x: x)
 
 .. warning::
 
@@ -45,39 +45,39 @@ and load the Invenio-DB and Invenio-Admin extensions:
 
 Let's now define a simple model with a model view, and one base view:
 
->>> from invenio_db import db
->>> from flask_admin.contrib.sqla import ModelView
->>> from flask_admin.base import BaseView, expose
->>> class Lunch(db.Model):
+### from invenio_db import db
+### from flask_admin.contrib.sqla import ModelView
+### from flask_admin.base import BaseView, expose
+### class Lunch(db.Model):
 ...     __tablename__ = 'diner_lunch'
 ...     id = db.Column(db.Integer, primary_key=True)
 ...     meal_name = db.Column(db.String(255), nullable=False)
 ...     is_vegetarian = db.Column(db.Boolean(name='is_v'), default=False)
 ...
->>> class LunchModelView(ModelView):
+### class LunchModelView(ModelView):
 ...     can_create = True
 ...     can_edit = True
 ...
->>> class MenuCard(BaseView):
+### class MenuCard(BaseView):
 ...     @expose('/')
 ...     def index(self):
 ...         return "HelloMenuCard!"
 
 and register them in the admin extension:
 
->>> ext_admin.register_view(LunchModelView, Lunch, db.session)
->>> ext_admin.register_view(MenuCard)
+### ext_admin.register_view(LunchModelView, Lunch, db.session)
+### ext_admin.register_view(MenuCard)
 
 Finally, initialize the database and run the development server:
 
->>> from sqlalchemy_utils.functions import create_database
->>> app.config.update(SQLALCHEMY_DATABASE_URI='sqlite:///test.db',
+### from sqlalchemy_utils.functions import create_database
+### app.config.update(SQLALCHEMY_DATABASE_URI='sqlite:///test.db',
 ...     SECRET_KEY='SECRET')
 ...
->>> with app.app_context():
+### with app.app_context():
 ...     create_database(db.engine.url)
 ...     db.create_all()
->>> app.run() # doctest: +SKIP
+### app.run() # doctest: +SKIP
 
 You should now be able to access the admin panel `http://localhost:5000/admin
 <http://localhost:5000/admin>`_.

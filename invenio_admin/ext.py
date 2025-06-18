@@ -31,19 +31,24 @@ from .views import protected_adminview_factory
 class _AdminState(object):
     """State for Invenio-Admin."""
 
-    def __init__(self, app, admin, permission_factory, view_class_factory):
+    def __init__(
+        self, app, admin, permission_factory, view_class_factory, entry_point_group
+    ):
         """Initialize state.
 
         :param app: The Flask application.
         :param admin: The Flask-Admin application.
         :param permission_factory: The permission factory to restrict access.
         :param view_class_factory: The view class factory to initialize them.
+        :param entry_point_group: Name of entry point group to load
+            views/models from. (Default: ``'invenio_admin.views'``)
         """
         # Create admin instance.
         self.app = app
         self.admin = admin
         self.permission_factory = permission_factory
         self.view_class_factory = view_class_factory
+        self.entry_point_group = entry_point_group
 
     def register_view(self, view_class, *args, **kwargs):
         """Register an admin view on this admin instance.
@@ -145,10 +150,9 @@ class InvenioAdmin(object):
         )
 
         # Create admin state
-        state = _AdminState(app, admin, permission_factory, view_class_factory)
-        if entry_point_group:
-            state.load_entry_point_group(entry_point_group)
-
+        state = _AdminState(
+            app, admin, permission_factory, view_class_factory, entry_point_group
+        )
         app.extensions["invenio-admin"] = state
         return state
 
@@ -175,15 +179,17 @@ class InvenioAdmin(object):
 
 def finalize_app(app):
     """Finalize app."""
+    invenio_admin = app.extensions["invenio-admin"]
+    if entry_point_group := invenio_admin.entry_point_group:
+        invenio_admin.load_entry_point_group(entry_point_group)
     lazy_base_template(app)
     init_menu(app)
 
 
 def lazy_base_template(app):
     """Initialize admin base template lazily."""
-    base_template = app.config.get("ADMIN_BASE_TEMPLATE")
-    invenio_admin = app.extensions["invenio-admin"]
-    if base_template:
+    if base_template := app.config.get("ADMIN_BASE_TEMPLATE"):
+        invenio_admin = app.extensions["invenio-admin"]
         invenio_admin.admin.base_template = base_template
 
 
