@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version v1.5.2 (released 2025-07-03)
+
+- fix: moves model initialization in `finalize_app` to properly load
+  ``invenio_admin.views`` and avoid extension loading issues.
+
 Version v1.5.1 (released 2024-10-31)
 
 - setup: pin wtforms
