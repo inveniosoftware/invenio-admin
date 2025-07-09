@@ -12,15 +12,14 @@
 """Module tests."""
 
 import importlib
+from importlib.metadata import EntryPoint, PackageNotFoundError
 from unittest.mock import patch
 
 import flask_admin
-import importlib_metadata
 import pytest
 from flask import Flask
 from flask_admin.contrib.sqla import ModelView
 from flask_menu import current_menu
-from importlib_metadata import EntryPoint
 from invenio_access.permissions import Permission
 from invenio_db import db
 from invenio_theme import InvenioTheme
@@ -89,8 +88,8 @@ def test_base_template_override():
 def test_default_permission(app):
     """Test loading of default permission class."""
     with app.app_context():
-        with patch("importlib_metadata.version") as get_distribution:
-            get_distribution.side_effect = importlib_metadata.PackageNotFoundError
+        with patch("importlib.metadata.version") as get_distribution:
+            get_distribution.side_effect = PackageNotFoundError
             assert not isinstance(admin_permission_factory(None), Permission)
 
     assert isinstance(admin_permission_factory(None), Permission)
@@ -252,7 +251,7 @@ def _mock_iter_entry_points():
     return fn
 
 
-@patch("importlib_metadata.entry_points", _mock_iter_entry_points())
+@patch("importlib.metadata.entry_points", _mock_iter_entry_points())
 def test_invalid_entry_points():
     """Test invalid admin views discovery through entry points."""
     app = Flask("testapp")
@@ -263,7 +262,7 @@ def test_invalid_entry_points():
     assert '"view_class"' in str(e)
 
 
-@patch("importlib_metadata.entry_points", _mock_iter_entry_points())
+@patch("importlib.metadata.entry_points", _mock_iter_entry_points())
 def test_entry_points():
     """Test admin views discovery through entry points."""
     from flask_principal import Permission
