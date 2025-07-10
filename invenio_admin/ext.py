@@ -14,10 +14,10 @@ from __future__ import absolute_import, print_function
 
 import warnings
 
-import importlib_metadata
 from flask_admin import Admin, AdminIndexView
 from flask_login import current_user
 from flask_menu import current_menu
+from invenio_base.utils import entry_points
 from invenio_db import db
 from invenio_i18n import lazy_gettext as _
 from invenio_theme.proxies import current_theme_icons
@@ -67,7 +67,7 @@ class _AdminState(object):
 
         :param str entry_point_group: Name of the entry point group.
         """
-        for ep in set(importlib_metadata.entry_points(group=entry_point_group)):
+        for ep in entry_points(group=entry_point_group):
             admin_ep = dict(ep.load())
             keys = tuple(k in admin_ep for k in ("model", "modelview", "view_class"))
 

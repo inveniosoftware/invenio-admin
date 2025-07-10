@@ -9,7 +9,8 @@
 
 """Permissions for Invenio-Admin."""
 
-import importlib_metadata
+import importlib.metadata
+
 from flask_principal import ActionNeed
 
 action_admin_access = ActionNeed("admin-access")
@@ -28,9 +29,9 @@ def admin_permission_factory(admin_view):
     :returns: Permission instance.
     """
     try:
-        importlib_metadata.version("invenio-access")
+        importlib.metadata.version("invenio-access")
         from invenio_access import Permission
-    except importlib_metadata.PackageNotFoundError:
+    except importlib.metadata.PackageNotFoundError:
         from flask_principal import Permission
 
     return Permission(action_admin_access)
