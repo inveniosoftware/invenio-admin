@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2025-2026 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -39,6 +40,8 @@ class FilterConverter(filters.FilterConverter):
 
     uuid_filters = (UUIDEqualFilter,)
 
+    utcdatetime_filters = filters.FilterConverter.datetime_filters
+
     @convert("uuidtype")
     def conv_uuid(self, column, name, **kwargs):
         """Convert UUID filter."""
@@ -48,3 +51,8 @@ class FilterConverter(filters.FilterConverter):
     def conv_variant(self, column, name, **kwargs):
         """Convert variants."""
         return self.convert(str(column.type), column, name, **kwargs)
+
+    @convert("utcdatetime")
+    def conv_utcdatetime(self, column, name, **kwargs):
+        """Convert utcdatetime."""
+        return [f(column, name, **kwargs) for f in self.utcdatetime_filters]
