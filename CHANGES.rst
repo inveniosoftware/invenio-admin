@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version 1.5.3 (released 2025-11-18)
+
+- fix: upper pin flask-admin<2
+
 Version v1.5.2 (released 2025-07-03)
 
 - fix: moves model initialization in `finalize_app` to properly load
