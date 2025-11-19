@@ -11,6 +11,7 @@ Changes
 Version 1.5.3 (released 2025-11-18)
 
 - fix: upper pin flask-admin<2
+- fix: use _ for babel options with setuptools>=78
 
 Version v1.5.2 (released 2025-07-03)
 
