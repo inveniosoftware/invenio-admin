@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2024 CERN.
+# Copyright (C) 2026 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -264,6 +265,6 @@ from __future__ import absolute_import, print_function
 from .ext import InvenioAdmin
 from .proxies import current_admin
 
-__version__ = "1.5.3"
+__version__ = "1.6.0"
 
 __all__ = ("__version__", "InvenioAdmin", "current_admin")
