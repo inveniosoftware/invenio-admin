@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2021-2025 CERN.
+# Copyright (C) 2025 KTH Royal Institute of Technology.
+# Copyright (C) 2024 Graz University of Technology.
+#
+# Invenio App RDM is free software; you can redistribute it and/or modify
+# it under the terms of the MIT License; see LICENSE file for more details.
+
 name: Publish
 
 on:
@@ -6,8 +15,9 @@ on:
       - v*
 
 jobs:
-  Publish:
+  build-n-publish:
     uses: inveniosoftware/workflows/.github/workflows/pypi-publish.yml@master
     secrets: inherit
     with:
       babel-compile-catalog: true
+      backend-package-path: invenio_admin
