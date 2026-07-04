@@ -1,4 +1,121 @@
-[build-system]
-requires = ["setuptools", "wheel", "babel>2.8"]
-build-backend = "setuptools.build_meta"
+# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2024 CERN.
+# SPDX-FileCopyrightText: 2022-2026 Graz University of Technology.
+# SPDX-FileCopyrightText: 2022 Graz University of Technology.
+# SPDX-FileCopyrightText: 2022 RERO.
+# SPDX-FileCopyrightText: 2026 TU Wien.
+# SPDX-License-Identifier: MIT
 
+[project]
+name = "invenio-admin"
+description = "Invenio module that adds administration panel to the system."
+readme = "README.rst"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [
+  { name = "CERN", email = "info@inveniosoftware.org" },
+]
+keywords = [
+  "admin",
+  "flask-admin",
+  "invenio",
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+]
+dependencies = [
+  "flask-admin>=1.5.6,<2.0.0",
+  "flask-menu>=0.5.0",
+  "flask-principal>=0.4.0",
+  "invenio-accounts>=1.2.1",
+  "invenio-app>=1.4.0",
+  "invenio-base>=2.3.2",
+  "invenio-db>=1.0.9",
+  "invenio-i18n>=2.0.0",
+  "wtforms<3.2.0",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/inveniosoftware/invenio-admin"
+
+[project.entry-points."invenio_access.actions"]
+admin_access = "invenio_admin.permissions:action_admin_access"
+
+[project.entry-points."invenio_base.apps"]
+invenio_admin = "invenio_admin:InvenioAdmin"
+
+[project.entry-points."invenio_base.blueprints"]
+invenio_admin = "invenio_admin.views:blueprint"
+
+[project.entry-points."invenio_base.finalize_app"]
+invenio_admin = "invenio_admin.ext:finalize_app"
+
+[project.optional-dependencies]
+access = []
+docs = []
+tests = [
+  "invenio-access>=1.0.0",
+  "invenio-db[postgresql]>=1.0.9",
+  "invenio-theme>=1.3.4",
+  "pytest-black-ng>=0.4.0",
+  "pytest-invenio>=1.4.3",
+  "sphinx>=4.5",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# see https://babel.pocoo.org/en/latest/messages.html#toml-configuration-format
+[tool.babel]
+[tool.babel.compile_catalog]
+directory = "invenio_admin/translations/"
+use_fuzzy = true
+
+[tool.babel.extract_messages]
+copyright_holder = "CERN"
+msgid_bugs_address = "info@inveniosoftware.org"
+mapping_file = "pyproject.toml"
+output_file = "invenio_admin/translations/messages.pot"
+add_comments = "NOTE"
+
+[tool.babel.init_catalog]
+input_file = "invenio_admin/translations/messages.pot"
+output_dir = "invenio_admin/translations/"
+
+[[tool.babel.mappings]]
+method = "javascript"
+pattern = "**.js"
+encoding = "utf-8"
+extract_messages = "$._, jQuery._"
+
+[[tool.babel.mappings]]
+method = "python"
+pattern = "**.py"
+encoding = "utf-8"
+
+[[tool.babel.mappings]]
+method = "jinja2"
+pattern = "**/templates/**.html"
+encoding = "utf-8"
+
+[tool.hatch.version]
+path = "invenio_admin/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/invenio_admin",
+]
+
+[tool.isort]
+profile = "black"
+
+[tool.pydocstyle]
+add_ignore = "D401"
+
+[tool.pytest.ini_options]
+addopts = '--black --isort --pydocstyle --doctest-glob="*.rst" --doctest-modules --cov=invenio_admin --cov-report=term-missing'
+filterwarnings = ["ignore::pytest.PytestDeprecationWarning"]
+testpaths = "tests invenio_admin"
+live_server_scope = "module"
