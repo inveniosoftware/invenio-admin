@@ -1,5 +1,6 @@
 # SPDX-FileCopyrightText: 2015-2024 CERN.
 # SPDX-FileCopyrightText: 2026 Graz University of Technology.
+# SPDX-FileCopyrightText: 2026 TU Wien.
 # SPDX-License-Identifier: MIT
 
 """Administration interface for Invenio applications.
@@ -260,6 +261,6 @@ from __future__ import absolute_import, print_function
 from .ext import InvenioAdmin
 from .proxies import current_admin
 
-__version__ = "1.6.0"
+__version__ = "1.6.1"
 
 __all__ = ("__version__", "InvenioAdmin", "current_admin")
